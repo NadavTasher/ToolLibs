@@ -913,7 +913,7 @@ public class Light {
         }
     }
 
-    static class Graphics{
+    static class Graphics {
         static class DragNavigation extends LinearLayout {
             private Drawable icon;
             private FrameLayout upContent;
@@ -925,10 +925,10 @@ public class Light {
             private OnStateChangedListener onstate;
             private LinearLayout pullOff;
 
-            public DragNavigation(Context context){
+            public DragNavigation(Context context) {
                 super(context);
-                icon=null;
-                backgroundColor=Color.BLACK;
+                icon = null;
+                backgroundColor = Color.BLACK;
                 init();
             }
 
@@ -1075,7 +1075,7 @@ public class Light {
                 upContent.removeAllViews();
             }
 
-            public int spacerSize(){
+            public int spacerSize() {
                 return smallNavigation;
             }
 
@@ -1189,45 +1189,48 @@ public class Light {
             }
         }
     }
-    static class ModularJSON{
-        static class Module{
-            ArrayList<Module> subModules=null;
-            String name=null,value=null;
-            String[] options=null;
-            static class OptionModule extends Module{
-                OptionModule(String name,String[] options){
-                    super.name=name;
-                    super.options=options;
+
+    static class ModularJSON {
+        static class Module {
+            ArrayList<Module> subModules = null;
+            String name = null, value = null;
+            String[] options = null;
+
+            static class OptionModule extends Module {
+                OptionModule(String name, String[] options) {
+                    super.name = name;
+                    super.options = options;
                 }
             }
-            static class ValueModule extends Module{
-                ValueModule(String name,String value){
-                    super.name=name;
-                    super.value=value;
+
+            static class ValueModule extends Module {
+                ValueModule(String name, String value) {
+                    super.name = name;
+                    super.value = value;
                 }
             }
-            static class MasterModule extends Module{
-                MasterModule(JSONObject masterObject){
-                    super.subModules=new ArrayList<>();
+
+            static class MasterModule extends Module {
+                MasterModule(JSONObject masterObject) {
+                    super.subModules = new ArrayList<>();
                     try {
                         Iterator<String> types = masterObject.keys();
                         while (types.hasNext()) {
                             String name = types.next();
-                            if(masterObject.get(name) instanceof String){
+                            if (masterObject.get(name) instanceof String) {
                                 super.subModules.add(new ValueModule(name, masterObject.getString(name)));
-                            }else if(masterObject.get(name) instanceof JSONArray){
-                                JSONArray convertFrom=masterObject.getJSONArray(name);
-                                String[] converted=new String[convertFrom.length()];
-                                for (int p=0;p<convertFrom.length();p++){
-                                    converted[p]=convertFrom.getString(p);
+                            } else if (masterObject.get(name) instanceof JSONArray) {
+                                JSONArray convertFrom = masterObject.getJSONArray(name);
+                                String[] converted = new String[convertFrom.length()];
+                                for (int p = 0; p < convertFrom.length(); p++) {
+                                    converted[p] = convertFrom.getString(p);
                                 }
                                 super.subModules.add(new OptionModule(name, converted));
-                            }else if(masterObject.get(name) instanceof JSONObject){
+                            } else if (masterObject.get(name) instanceof JSONObject) {
                                 super.subModules.add(new MasterModule(masterObject.getJSONObject(name)));
                             }
                         }
-                    }catch (JSONException ignored){
-
+                    } catch (JSONException ignored) {
                     }
                 }
             }
