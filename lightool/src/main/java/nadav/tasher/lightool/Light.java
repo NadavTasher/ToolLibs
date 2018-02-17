@@ -26,6 +26,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -48,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Random;
 
 import static java.lang.Thread.sleep;
@@ -108,7 +112,7 @@ public class Light {
                 }
             }
 
-            public static class FileDownloader extends AsyncTask<String, String, String> {
+            static class FileDownloader extends AsyncTask<String, String, String> {
                 private String furl;
                 private File fdpath;
                 private boolean available;
@@ -182,7 +186,7 @@ public class Light {
                 }
             }
 
-            public static class FileReader extends AsyncTask<String, String, String> {
+            static class FileReader extends AsyncTask<String, String, String> {
                 private FileReader.OnEnd one;
                 private String fi;
 
@@ -215,17 +219,17 @@ public class Light {
                 @Override
                 protected void onPostExecute(String content) {
                     if (one != null) {
-                        one.onFileRead(is);
+                        one.onFileRead(content);
                     }
                 }
 
-                public interface OnEnd {
-                    void onFileRead(InputStream stream);
+                interface OnEnd {
+                    void onFileRead(String content);
                 }
             }
         }
 
-        public static class Pinger extends AsyncTask<String, String, Boolean> {
+        static class Pinger extends AsyncTask<String, String, Boolean> {
             private Pinger.OnEnd onEnd;
             private int tmout = 2000;
             private String addr;
@@ -261,16 +265,16 @@ public class Light {
             }
         }
 
-        public static class Request {
-            public static class Post extends AsyncTask<String, String, String> {
+        static class Request {
+            static class Post extends AsyncTask<String, String, String> {
                 private String phpurl;
                 private ArrayList<RequestParameter> parms;
                 private OnPost op;
                 private String result;
 
-                public Post(String url, ArrayList<RequestParameter> parameters, OnPost onpost) {
+                public Post(String url, RequestParameter[] parameters, OnPost onpost) {
                     this.phpurl = url;
-                    parms = postvalues;
+                    parms = new ArrayList<>(Arrays.asList(parameters));
                     op = onpost;
                 }
 
@@ -335,7 +339,7 @@ public class Light {
                 }
             }
 
-            public static class RequestParameter {
+            static class RequestParameter {
                 private String name;
                 private String value;
 
@@ -363,12 +367,12 @@ public class Light {
         }
     }
 
-    public static class Device {
-        public static boolean isOnline(Context c) {
+    static class Device {
+        static boolean isOnline(Context c) {
             return ((ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
         }
 
-        public static boolean isWifi(Context c) {
+        static boolean isWifi(Context c) {
             ConnectivityManager connectivityManager = ((ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE));
             Network[] networks = connectivityManager.getAllNetworks();
             if (networks == null) {
@@ -386,7 +390,7 @@ public class Light {
             return false;
         }
 
-        public static boolean isInstalled(Context con, String packageName) {
+        static boolean isInstalled(Context con, String packageName) {
             try {
                 con.getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
                 return true;
@@ -395,7 +399,7 @@ public class Light {
             }
         }
 
-        public static int getVersionCode(Context con, String packagename) {
+        static int getVersionCode(Context con, String packagename) {
             try {
                 return con.getPackageManager().getPackageInfo(packagename, PackageManager.GET_ACTIVITIES).versionCode;
             } catch (PackageManager.NameNotFoundException e) {
@@ -404,7 +408,7 @@ public class Light {
             }
         }
 
-        public static String getVersionName(Context con, String packagename) {
+        static String getVersionName(Context con, String packagename) {
             try {
                 return con.getPackageManager().getPackageInfo(packagename, PackageManager.GET_ACTIVITIES).versionName;
             } catch (PackageManager.NameNotFoundException e) {
@@ -413,14 +417,14 @@ public class Light {
             }
         }
 
-        public static int screenX(Context con) {
+        static int screenX(Context con) {
             Display display = ((WindowManager) con.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
             return size.x;
         }
 
-        public static int screenY(Context con) {
+        static int screenY(Context con) {
             Display display = ((WindowManager) con.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
@@ -428,8 +432,8 @@ public class Light {
         }
     }
 
-    public static class Stringer {
-        public static String reversed(String s) {
+    static class Stringer {
+        static String reversed(String s) {
             String news = "";
             for (int i = s.length() - 1; i >= 0; i--) {
                 news = news + s.charAt(i);
@@ -437,21 +441,21 @@ public class Light {
             return news;
         }
 
-        public static class Encryptor {
-            public static String CONTROL = "\u0001\u0002\u0003\u0004\u0005\u0006\u0007\n\b\t\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F ";
-            public static String LATIN = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F ¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ";
-            public static String GREEK = "ͰͱͲͳʹ͵Ͷͷ\u0378\u0379ͺͻͼͽ;\u037F\u0380\u0381\u0382\u0383΄΅Ά·ΈΉΊ\u038BΌ\u038DΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ\u03A2ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϏϐϑϒϓϔϕϖϗϘϙϚϛϜϝϞϟϠϡϢϣϤϥϦϧϨϩϪϫϬϭϮϯϰϱϲϳϴϵ϶ϷϸϹϺϻϼϽϾϿ";
-            public static String HEBREW = "\u0590ְֱֲֳִֵֶַָֹֺֻּֽ֑֖֛֢֣֤֥֦֧֪֚֭֮֒֓֔֕֗֘֙֜֝֞֟֠֡֨֩֫֬֯־ֿ׀ׁׂ׃ׅׄ׆ׇ\u05C8\u05C9\u05CA\u05CB\u05CC\u05CD\u05CE\u05CFאבגדהוזחטיךכלםמןנסעףפץצקרשת\u05EB\u05EC\u05ED\u05EE\u05EFװױײ׳״\u05F5\u05F6\u05F7\u05F8\u05F9\u05FA\u05FB\u05FC\u05FD\u05FE";
-            public static String LATINEXTENTION = "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿẀẁẂẃẄẅẆẇẈẉẊẋẌẍẎẏẐẑẒẓẔẕẖẗẘẙẚẛẜẝẞẟẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹỺỻỼỽỾỿ";
-            public static String SYMBOLIC = "‐‑‒–—―‖‗‘’‚‛“”„‟†‡•‣․‥…‧\u2028\u2029\u202A\u202B\u202C\u202D\u202E‰‱′″‴‵‶‷‸‹›※‼‽‾‿⁀⁁⁂⁃⁄⁅⁆⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁒⁓⁔⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞\u2060\u2061\u2062\u2063\u2064\u2065\u2066\u2067\u2068\u2069\u206A\u206B\u206C\u206D\u206E\u206F";
-            public static String SUPERANDSUB = "⁰ⁱ\u2072\u2073⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿ₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎\u208Fₐₑₒₓₔₕₖₗₘₙₚₛₜ\u209D\u209E\u209F";
-            public static String CURRENCIES = "₠₡₢₣₤₥₦₧₨₩₪₫€₭₮₯₰₱₲₳₴₵₶₷₸₹₺\u20BB\u20BC\u20BD\u20BE\u20BF\u20C0\u20C1\u20C2\u20C3\u20C4\u20C5\u20C6\u20C7\u20C8\u20C9\u20CA\u20CB\u20CC\u20CD\u20CE\u20CF";
-            public static String LETTERLIKE = "℀℁ℂ℃℄℅℆ℇ℈℉ℊℋℌℍℎℏℐℑℒℓ℔ℕ№℗℘ℙℚℛℜℝ℞℟℠℡™℣ℤ℥Ω℧ℨ℩KÅℬℭ℮ℯℰℱℲℳℴℵℶℷℸℹ℺℻ℼℽℾℿ⅀⅁⅂⅃⅄ⅅⅆⅇⅈⅉ⅊⅋⅌⅍ⅎ⅏";
-            public static String ALL = CONTROL + LATIN + GREEK + HEBREW + LATINEXTENTION + SYMBOLIC + SUPERANDSUB + CURRENCIES + LETTERLIKE;
+        static class Encryptor {
+            static String CONTROL = "\u0001\u0002\u0003\u0004\u0005\u0006\u0007\n\b\t\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F ";
+            static String LATIN = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F ¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ";
+            static String GREEK = "ͰͱͲͳʹ͵Ͷͷ\u0378\u0379ͺͻͼͽ;\u037F\u0380\u0381\u0382\u0383΄΅Ά·ΈΉΊ\u038BΌ\u038DΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ\u03A2ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϏϐϑϒϓϔϕϖϗϘϙϚϛϜϝϞϟϠϡϢϣϤϥϦϧϨϩϪϫϬϭϮϯϰϱϲϳϴϵ϶ϷϸϹϺϻϼϽϾϿ";
+            static String HEBREW = "\u0590ְֱֲֳִֵֶַָֹֺֻּֽ֑֖֛֢֣֤֥֦֧֪֚֭֮֒֓֔֕֗֘֙֜֝֞֟֠֡֨֩֫֬֯־ֿ׀ׁׂ׃ׅׄ׆ׇ\u05C8\u05C9\u05CA\u05CB\u05CC\u05CD\u05CE\u05CFאבגדהוזחטיךכלםמןנסעףפץצקרשת\u05EB\u05EC\u05ED\u05EE\u05EFװױײ׳״\u05F5\u05F6\u05F7\u05F8\u05F9\u05FA\u05FB\u05FC\u05FD\u05FE";
+            static String LATINEXTENTION = "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿẀẁẂẃẄẅẆẇẈẉẊẋẌẍẎẏẐẑẒẓẔẕẖẗẘẙẚẛẜẝẞẟẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹỺỻỼỽỾỿ";
+            static String SYMBOLIC = "‐‑‒–—―‖‗‘’‚‛“”„‟†‡•‣․‥…‧\u2028\u2029\u202A\u202B\u202C\u202D\u202E‰‱′″‴‵‶‷‸‹›※‼‽‾‿⁀⁁⁂⁃⁄⁅⁆⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁒⁓⁔⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞\u2060\u2061\u2062\u2063\u2064\u2065\u2066\u2067\u2068\u2069\u206A\u206B\u206C\u206D\u206E\u206F";
+            static String SUPERANDSUB = "⁰ⁱ\u2072\u2073⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿ₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎\u208Fₐₑₒₓₔₕₖₗₘₙₚₛₜ\u209D\u209E\u209F";
+            static String CURRENCIES = "₠₡₢₣₤₥₦₧₨₩₪₫€₭₮₯₰₱₲₳₴₵₶₷₸₹₺\u20BB\u20BC\u20BD\u20BE\u20BF\u20C0\u20C1\u20C2\u20C3\u20C4\u20C5\u20C6\u20C7\u20C8\u20C9\u20CA\u20CB\u20CC\u20CD\u20CE\u20CF";
+            static String LETTERLIKE = "℀℁ℂ℃℄℅℆ℇ℈℉ℊℋℌℍℎℏℐℑℒℓ℔ℕ№℗℘ℙℚℛℜℝ℞℟℠℡™℣ℤ℥Ω℧ℨ℩KÅℬℭ℮ℯℰℱℲℳℴℵℶℷℸℹ℺℻ℼℽℾℿ⅀⅁⅂⅃⅄ⅅⅆⅇⅈⅉ⅊⅋⅌⅍ⅎ⅏";
+            static String ALL = CONTROL + LATIN + GREEK + HEBREW + LATINEXTENTION + SYMBOLIC + SUPERANDSUB + CURRENCIES + LETTERLIKE;
             private static String DEFAULT = ALL;
 
-            public static class EncryptionV1 {
-                public static String encrypt(String key, String text) {
+            static class EncryptionV1 {
+                static String encrypt(String key, String text) {
                     if (key != null && key.length() > 0) {
                         int keyPart = 0;
                         String encrypted = "";
@@ -478,7 +482,7 @@ public class Light {
                     return text;
                 }
 
-                public static String decrypt(String key, String text) {
+                static String decrypt(String key, String text) {
                     if (key != null && key.length() > 0) {
                         int keyPart = 0;
                         String encrypted = "";
@@ -505,7 +509,7 @@ public class Light {
                     return text;
                 }
 
-                public static String encrypt(String key, String text, String mask) {
+                static String encrypt(String key, String text, String mask) {
                     if (key != null && key.length() > 0) {
                         int keyPart = 0;
                         String encrypted = "";
@@ -532,7 +536,7 @@ public class Light {
                     return text;
                 }
 
-                public static String decrypt(String key, String text, String mask) {
+                static String decrypt(String key, String text, String mask) {
                     if (key != null && key.length() > 0) {
                         int keyPart = 0;
                         String encrypted = "";
@@ -569,8 +573,8 @@ public class Light {
                 }
             }
 
-            public static class EncryptionV2 {
-                public static String encrypt(@NonNull String key, @NonNull String text) {
+            static class EncryptionV2 {
+                static String encrypt(@NonNull String key, @NonNull String text) {
                     int[] keyNode = new int[key.length()];
                     int[] node1 = new int[text.length()];
                     int[] node2 = new int[text.length()];
@@ -602,7 +606,7 @@ public class Light {
                     return String.copyValueOf(node3);
                 }
 
-                public static String decrypt(@NonNull String key, @NonNull String text) {
+                static String decrypt(@NonNull String key, @NonNull String text) {
                     int[] keyNode = new int[key.length()];
                     int[] node1 = new int[text.length()];
                     int[] node2 = new int[text.length()];
@@ -634,7 +638,7 @@ public class Light {
                     return String.copyValueOf(node3);
                 }
 
-                public static String encrypt(@NonNull String key, @NonNull String text, @NonNull String map) {
+                static String encrypt(@NonNull String key, @NonNull String text, @NonNull String map) {
                     int[] keyNode = new int[key.length()];
                     int[] node1 = new int[text.length()];
                     int[] node2 = new int[text.length()];
@@ -666,7 +670,7 @@ public class Light {
                     return String.copyValueOf(node3);
                 }
 
-                public static String decrypt(@NonNull String key, @NonNull String text, @NonNull String map) {
+                static String decrypt(@NonNull String key, @NonNull String text, @NonNull String map) {
                     int[] keyNode = new int[key.length()];
                     int[] node1 = new int[text.length()];
                     int[] node2 = new int[text.length()];
@@ -707,11 +711,11 @@ public class Light {
                     return -1;
                 }
 
-                public static char findInt(int s, String mask) {
+                static char findInt(int s, String mask) {
                     return mask.charAt(revalueInt(s, mask));
                 }
 
-                public static int revalueInt(int s, String mask) {
+                static int revalueInt(int s, String mask) {
                     while (s > mask.length() - 1) {
                         s = s - (mask.length() - 1);
                     }
@@ -721,7 +725,7 @@ public class Light {
                     return s;
                 }
 
-                public static int rIA(int s, int[] array) {
+                static int rIA(int s, int[] array) {
                     while (s > array.length - 1) {
                         s = s - (array.length - 1);
                     }
@@ -733,10 +737,10 @@ public class Light {
             }
         }
 
-        public static class TextAnimator {
-            public static final String STOP_ANIMATION = "TEXT_ANIMATION_ACTION_STOP";
+        static class TextAnimator {
+            static final String STOP_ANIMATION = "TEXT_ANIMATION_ACTION_STOP";
 
-            public static Thread animateAppend(final Activity a, final TextView tv, final int millispace) {
+            static Thread animateAppend(final Activity a, final TextView tv, final int millispace) {
                 return new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -771,7 +775,7 @@ public class Light {
                 });
             }
 
-            public static Thread animateTypeEffect(final Activity a, final TextView tv, final int millispace) {
+            static Thread animateTypeEffect(final Activity a, final TextView tv, final int millispace) {
                 return new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -810,33 +814,33 @@ public class Light {
         }
     }
 
-    public static class Animations {
-        public static final float[] VIBRATE_SMALL = new float[]{0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6, 5, -5, 4, -4, 3, -3, 2, -2, 1, -1, 0};
-        public static final float[] VIBRATE_BIG = new float[]{0, 10, -10, 20, -20, 30, -30, 30, -20, 20, -10, 10, 0};
-        public static final float[] JUMP_SMALL = new float[]{0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7, 7, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0};
-        public static final float[] JUMP_BIG = new float[]{0, 0, 0, 0, 10, 10, 20, 20, 30, 30, 40, 40, 40, 40, 30, 30, 20, 20, 10, 10, 0, 0, 0, 0};
-        public static final float[] INVISIBLE_TO_VISIBLE = new float[]{0.0f, 1.0f};
-        public static final float[] VISIBLE_TO_INVISIBLE = new float[]{1.0f, 0.0f};
+    static class Animations {
+        static final float[] VIBRATE_SMALL = new float[]{0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6, 5, -5, 4, -4, 3, -3, 2, -2, 1, -1, 0};
+        static final float[] VIBRATE_BIG = new float[]{0, 10, -10, 20, -20, 30, -30, 30, -20, 20, -10, 10, 0};
+        static final float[] JUMP_SMALL = new float[]{0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7, 7, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0};
+        static final float[] JUMP_BIG = new float[]{0, 0, 0, 0, 10, 10, 20, 20, 30, 30, 40, 40, 40, 40, 30, 30, 20, 20, 10, 10, 0, 0, 0, 0};
+        static final float[] INVISIBLE_TO_VISIBLE = new float[]{0.0f, 1.0f};
+        static final float[] VISIBLE_TO_INVISIBLE = new float[]{1.0f, 0.0f};
 
-        public static float[] getSlideRight(Context c) {
+        static float[] getSlideRight(Context c) {
             return new float[]{0, Device.screenX(c)};
         }
 
-        public static float[] getSlideLeft(Context c) {
+        static float[] getSlideLeft(Context c) {
             return new float[]{0, -Device.screenX(c)};
         }
 
-        public static float[] getSlideUp(Context c) {
+        static float[] getSlideUp(Context c) {
             return new float[]{0, Device.screenY(c)};
         }
 
-        public static float[] getSlideDown(Context c) {
+        static float[] getSlideDown(Context c) {
             return new float[]{0, -Device.screenY(c)};
         }
     }
 
-    public static class Filer {
-        public static String readFile(File file) {
+    static class Filer {
+        static String readFile(File file) {
             try {
                 StringBuilder text = new StringBuilder();
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
@@ -852,7 +856,7 @@ public class Light {
             }
         }
 
-        public static void writeToFile(File file, String lines) {
+        static void writeToFile(File file, String lines) {
             try {
                 OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file));
                 writer.write(lines);
@@ -863,47 +867,47 @@ public class Light {
             }
         }
 
-        public static void log(File f, String s) {
+        static void log(File f, String s) {
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss @ ");
             String time = dateFormat.format(new Date());
-            String current = FileFactory.readFile(f);
+            String current = Filer.readFile(f);
             if (current != null) {
                 String all = current + time + s;
-                FileFactory.writeToFile(f, all);
+                Filer.writeToFile(f, all);
             } else {
                 String start = time + "Start Log\n";
                 String all = start + time + s;
-                FileFactory.writeToFile(f, all);
+                Filer.writeToFile(f, all);
             }
             Log.i("Logger", s);
         }
 
-        public static void logWarning(File f, String s) {
+        static void logWarning(File f, String s) {
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss @ ");
             String time = dateFormat.format(new Date()) + "Warning: ";
-            String current = FileFactory.readFile(f);
+            String current = Filer.readFile(f);
             if (current != null) {
                 String all = current + time + s;
-                FileFactory.writeToFile(f, all);
+                Filer.writeToFile(f, all);
             } else {
                 String start = time + "Start Log\n";
                 String all = start + time + s;
-                FileFactory.writeToFile(f, all);
+                Filer.writeToFile(f, all);
             }
             Log.i("Logger", s);
         }
 
-        public static void logError(File f, String s) {
+        static void logError(File f, String s) {
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss @ ");
             String time = dateFormat.format(new Date()) + "Error!: ";
-            String current = FileFactory.readFile(f);
+            String current = Filer.readFile(f);
             if (current != null) {
                 String all = current + time + s;
-                FileFactory.writeToFile(f, all);
+                Filer.writeToFile(f, all);
             } else {
                 String start = time + "Start Log\n";
                 String all = start + time + s;
-                FileFactory.writeToFile(f, all);
+                Filer.writeToFile(f, all);
             }
             Log.i("Logger", s);
         }
@@ -921,6 +925,13 @@ public class Light {
             private OnStateChangedListener onstate;
             private LinearLayout pullOff;
 
+            public DragNavigation(Context context){
+                super(context);
+                icon=null;
+                backgroundColor=Color.BLACK;
+                init();
+            }
+
             public DragNavigation(Context context, Drawable icon, int backgroundColor) {
                 super(context);
                 this.icon = icon;
@@ -929,7 +940,7 @@ public class Light {
             }
 
             private void init() {
-                final int y = Light.Device.screenY(getContext());
+                final int y = Device.screenY(getContext());
                 final int logoSize = (y / 8) - (y / 30);
                 smallNavigation = y / 8;
                 final int navFullY = (y / 3) * 2;
@@ -1064,6 +1075,10 @@ public class Light {
                 upContent.removeAllViews();
             }
 
+            public int spacerSize(){
+                return smallNavigation;
+            }
+
             @Override
             public boolean performClick() {
                 super.performClick();
@@ -1174,5 +1189,48 @@ public class Light {
             }
         }
     }
+    static class ModularJSON{
+        static class Module{
+            ArrayList<Module> subModules=null;
+            String name=null,value=null;
+            String[] options=null;
+            static class OptionModule extends Module{
+                OptionModule(String name,String[] options){
+                    super.name=name;
+                    super.options=options;
+                }
+            }
+            static class ValueModule extends Module{
+                ValueModule(String name,String value){
+                    super.name=name;
+                    super.value=value;
+                }
+            }
+            static class MasterModule extends Module{
+                MasterModule(JSONObject masterObject){
+                    super.subModules=new ArrayList<>();
+                    try {
+                        Iterator<String> types = masterObject.keys();
+                        while (types.hasNext()) {
+                            String name = types.next();
+                            if(masterObject.get(name) instanceof String){
+                                super.subModules.add(new ValueModule(name, masterObject.getString(name)));
+                            }else if(masterObject.get(name) instanceof JSONArray){
+                                JSONArray convertFrom=masterObject.getJSONArray(name);
+                                String[] converted=new String[convertFrom.length()];
+                                for (int p=0;p<convertFrom.length();p++){
+                                    converted[p]=convertFrom.getString(p);
+                                }
+                                super.subModules.add(new OptionModule(name, converted));
+                            }else if(masterObject.get(name) instanceof JSONObject){
+                                super.subModules.add(new MasterModule(masterObject.getJSONObject(name)));
+                            }
+                        }
+                    }catch (JSONException ignored){
 
+                    }
+                }
+            }
+        }
+    }
 }
