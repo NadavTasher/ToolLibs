@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/ToolLibs.iml" filepath="$PROJECT_DIR$/ToolLibs.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/lightool/lightool.iml" filepath="$PROJECT_DIR$/lightool/lightool.iml" />
-      <module fileurl="file://$PROJECT_DIR$/toollib/toollib.iml" filepath="$PROJECT_DIR$/toollib/toollib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/toollibpacked/toollibpacked.iml" filepath="$PROJECT_DIR$/toollibpacked/toollibpacked.iml" />
     </modules>
   </component>
 </project>

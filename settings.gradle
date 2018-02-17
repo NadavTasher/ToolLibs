@@ -1,1 +1,1 @@
-include ':app', ':toollib', ':toollibpacked', ':lightool'
+include ':app', ':lightool'

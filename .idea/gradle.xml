@@ -11,8 +11,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/lightool" />
-            <option value="$PROJECT_DIR$/toollib" />
-            <option value="$PROJECT_DIR$/toollibpacked" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
