@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.awt.font.NumericShaper;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -1080,18 +1081,15 @@ public class Light {
             }
 
             public int calculateOverlayedColor(int parentViewColor){
-                return colorFix( convertColor(parentViewColor)+ getSolidBackground()) / 2;
-            }
-
-            public int getSolidBackground(){
-                return Color.rgb(Color.red(backgroundColor),Color.green(backgroundColor),Color.blue(backgroundColor));
+                int calculatedA=convertColor(parentViewColor)+ convertColor(backgroundColor);
+                return colorRange(parentViewColor,backgroundColor);
             }
 
             private int convertColor(int color){
-                return Color.rgb(Color.red(color),Color.green(color),Color.blue(color));
+                return Color.argb(80,Color.red(color),Color.green(color),Color.blue(color));
             }
 
-            private int colorFix(int color){
+            public int colorFix(int color){
                 int red=Color.red(color);
                 int green=Color.green(color);
                 int blue=Color.blue(color);
@@ -1105,6 +1103,17 @@ public class Light {
                     green-=1;
                 }
                 return Color.argb(Color.alpha(color),red,green,blue);
+            }
+
+            public int colorRange(int colorA,int colorB){
+                int redA=Color.red(colorA);
+                int greenA=Color.green(colorA);
+                int blueA=Color.blue(colorA);
+                int redB=Color.red(colorB);
+                int greenB=Color.green(colorB);
+                int blueB=Color.blue(colorB);
+                int combineRed=redA-(redA-redB)/2,combineGreen=greenA-(greenA-greenB)/2,combineBlue=blueA-(blueA-blueB)/2;
+                return Color.rgb(combineRed,combineGreen,combineBlue);
             }
 
             @Override
