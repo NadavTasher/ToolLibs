@@ -57,9 +57,9 @@ import java.util.Random;
 import static java.lang.Thread.sleep;
 
 public class Light {
-    static class Net {
-        static class NetFile {
-            static class FileChecker extends AsyncTask<String, String, String> {
+    public static class Net {
+        public static class NetFile {
+            public static class FileChecker extends AsyncTask<String, String, String> {
                 private long kbs;
                 private String addr;
                 private boolean available;
@@ -112,7 +112,7 @@ public class Light {
                 }
             }
 
-            static class FileDownloader extends AsyncTask<String, String, String> {
+            public static class FileDownloader extends AsyncTask<String, String, String> {
                 private String furl;
                 private File fdpath;
                 private boolean available;
@@ -186,7 +186,7 @@ public class Light {
                 }
             }
 
-            static class FileReader extends AsyncTask<String, String, String> {
+            public static class FileReader extends AsyncTask<String, String, String> {
                 private FileReader.OnEnd one;
                 private String fi;
 
@@ -229,7 +229,7 @@ public class Light {
             }
         }
 
-        static class Pinger extends AsyncTask<String, String, Boolean> {
+        public static class Pinger extends AsyncTask<String, String, Boolean> {
             private Pinger.OnEnd onEnd;
             private int tmout = 2000;
             private String addr;
@@ -265,8 +265,8 @@ public class Light {
             }
         }
 
-        static class Request {
-            static class Post extends AsyncTask<String, String, String> {
+        public static class Request {
+            public static class Post extends AsyncTask<String, String, String> {
                 private String phpurl;
                 private ArrayList<RequestParameter> parms;
                 private OnPost op;
@@ -339,7 +339,7 @@ public class Light {
                 }
             }
 
-            static class RequestParameter {
+            public static class RequestParameter {
                 private String name;
                 private String value;
 
@@ -367,7 +367,7 @@ public class Light {
         }
     }
 
-    static class Device {
+    public static class Device {
         static boolean isOnline(Context c) {
             return ((ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
         }
@@ -432,7 +432,7 @@ public class Light {
         }
     }
 
-    static class Stringer {
+    public static class Stringer {
         static String reversed(String s) {
             String news = "";
             for (int i = s.length() - 1; i >= 0; i--) {
@@ -441,7 +441,7 @@ public class Light {
             return news;
         }
 
-        static class Encryptor {
+        public static class Encryptor {
             static String CONTROL = "\u0001\u0002\u0003\u0004\u0005\u0006\u0007\n\b\t\u000B\f\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F ";
             static String LATIN = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F ¡¢£¤¥¦§¨©ª«¬\u00AD®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ";
             static String GREEK = "ͰͱͲͳʹ͵Ͷͷ\u0378\u0379ͺͻͼͽ;\u037F\u0380\u0381\u0382\u0383΄΅Ά·ΈΉΊ\u038BΌ\u038DΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ\u03A2ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϏϐϑϒϓϔϕϖϗϘϙϚϛϜϝϞϟϠϡϢϣϤϥϦϧϨϩϪϫϬϭϮϯϰϱϲϳϴϵ϶ϷϸϹϺϻϼϽϾϿ";
@@ -454,7 +454,7 @@ public class Light {
             static String ALL = CONTROL + LATIN + GREEK + HEBREW + LATINEXTENTION + SYMBOLIC + SUPERANDSUB + CURRENCIES + LETTERLIKE;
             private static String DEFAULT = ALL;
 
-            static class EncryptionV1 {
+            public static class EncryptionV1 {
                 static String encrypt(String key, String text) {
                     if (key != null && key.length() > 0) {
                         int keyPart = 0;
@@ -573,7 +573,7 @@ public class Light {
                 }
             }
 
-            static class EncryptionV2 {
+            public static class EncryptionV2 {
                 static String encrypt(@NonNull String key, @NonNull String text) {
                     int[] keyNode = new int[key.length()];
                     int[] node1 = new int[text.length()];
@@ -737,7 +737,7 @@ public class Light {
             }
         }
 
-        static class TextAnimator {
+        public static class TextAnimator {
             static final String STOP_ANIMATION = "TEXT_ANIMATION_ACTION_STOP";
 
             static Thread animateAppend(final Activity a, final TextView tv, final int millispace) {
@@ -814,7 +814,7 @@ public class Light {
         }
     }
 
-    static class Animations {
+    public static class Animations {
         static final float[] VIBRATE_SMALL = new float[]{0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6, 5, -5, 4, -4, 3, -3, 2, -2, 1, -1, 0};
         static final float[] VIBRATE_BIG = new float[]{0, 10, -10, 20, -20, 30, -30, 30, -20, 20, -10, 10, 0};
         static final float[] JUMP_SMALL = new float[]{0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7, 7, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0};
@@ -839,7 +839,7 @@ public class Light {
         }
     }
 
-    static class Filer {
+    public static class Filer {
         static String readFile(File file) {
             try {
                 StringBuilder text = new StringBuilder();
@@ -913,8 +913,8 @@ public class Light {
         }
     }
 
-    static class Graphics {
-        static class DragNavigation extends LinearLayout {
+    public static class Graphics {
+        public static class DragNavigation extends LinearLayout {
             private Drawable icon;
             private FrameLayout upContent;
             private ImageView iconHolder;
@@ -1079,6 +1079,34 @@ public class Light {
                 return smallNavigation;
             }
 
+            public int calculateOverlayedColor(int parentViewColor){
+                return colorFix( convertColor(parentViewColor)+ getSolidBackground()) / 2;
+            }
+
+            public int getSolidBackground(){
+                return Color.rgb(Color.red(backgroundColor),Color.green(backgroundColor),Color.blue(backgroundColor));
+            }
+
+            private int convertColor(int color){
+                return Color.rgb(Color.red(color),Color.green(color),Color.blue(color));
+            }
+
+            private int colorFix(int color){
+                int red=Color.red(color);
+                int green=Color.green(color);
+                int blue=Color.blue(color);
+                if(red%2!=0){
+                    red-=1;
+                }
+                if(green%2!=0){
+                    green-=1;
+                }
+                if(green%2!=0){
+                    green-=1;
+                }
+                return Color.argb(Color.alpha(color),red,green,blue);
+            }
+
             @Override
             public boolean performClick() {
                 super.performClick();
@@ -1092,7 +1120,7 @@ public class Light {
             }
         }
 
-        static class ColorFadeAnimation {
+        public static class ColorFadeAnimation {
             private ColorState onChange;
             private int colorA, colorB;
 
@@ -1190,27 +1218,27 @@ public class Light {
         }
     }
 
-    static class ModularJSON {
-        static class Module {
+    public static class ModularJSON {
+        public static class Module {
             ArrayList<Module> subModules = null;
             String name = null, value = null;
             String[] options = null;
 
-            static class OptionModule extends Module {
+            public static class OptionModule extends Module {
                 OptionModule(String name, String[] options) {
                     super.name = name;
                     super.options = options;
                 }
             }
 
-            static class ValueModule extends Module {
+            public static class ValueModule extends Module {
                 ValueModule(String name, String value) {
                     super.name = name;
                     super.value = value;
                 }
             }
 
-            static class MasterModule extends Module {
+            public static class MasterModule extends Module {
                 MasterModule(JSONObject masterObject) {
                     super.subModules = new ArrayList<>();
                     try {
