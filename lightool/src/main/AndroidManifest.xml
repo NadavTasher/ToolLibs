@@ -1,14 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
           package="nadav.tasher.lightool"
->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <application android:allowBackup="true"
-                 android:label="@string/app_name"
-                 android:supportsRtl="true"
     >
 
-    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <application/>
 </manifest>

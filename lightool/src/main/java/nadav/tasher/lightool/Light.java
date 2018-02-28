@@ -1122,7 +1122,7 @@ public class Light {
                 return true;
             }
 
-            interface OnStateChangedListener {
+            public interface OnStateChangedListener {
                 void onOpen();
 
                 void onClose();
@@ -1221,7 +1221,7 @@ public class Light {
                 }).start();
             }
 
-            interface ColorState {
+            public interface ColorState {
                 void onColor(int color);
             }
         }
