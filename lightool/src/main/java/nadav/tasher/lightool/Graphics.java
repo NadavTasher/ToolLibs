@@ -41,7 +41,7 @@ public class Graphics {
         }
 
         private void init() {
-            final int y = Light.Device.screenY(getContext());
+            final int y = Device.screenY(getContext());
             final int logoSize = (y / 8) - (y / 30);
             smallNavigation = y / 8;
             final int navFullY = (y / 3) * 2;
