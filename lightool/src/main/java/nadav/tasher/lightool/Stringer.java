@@ -1,7 +1,6 @@
 package nadav.tasher.lightool;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import java.util.Random;
@@ -150,7 +149,7 @@ public class Stringer {
         }
 
         public static class EncryptionV2 {
-            public static String encrypt(@NonNull String key, @NonNull String text) {
+            public static String encrypt(String key, String text) {
                 int[] keyNode = new int[key.length()];
                 int[] node1 = new int[text.length()];
                 int[] node2 = new int[text.length()];
@@ -182,7 +181,7 @@ public class Stringer {
                 return String.copyValueOf(node3);
             }
 
-            public static String decrypt(@NonNull String key, @NonNull String text) {
+            public static String decrypt(String key, String text) {
                 int[] keyNode = new int[key.length()];
                 int[] node1 = new int[text.length()];
                 int[] node2 = new int[text.length()];
@@ -214,7 +213,7 @@ public class Stringer {
                 return String.copyValueOf(node3);
             }
 
-            public static String encrypt(@NonNull String key, @NonNull String text, @NonNull String map) {
+            public static String encrypt(String key, String text, String map) {
                 int[] keyNode = new int[key.length()];
                 int[] node1 = new int[text.length()];
                 int[] node2 = new int[text.length()];
@@ -246,7 +245,7 @@ public class Stringer {
                 return String.copyValueOf(node3);
             }
 
-            public static String decrypt(@NonNull String key, @NonNull String text, @NonNull String map) {
+            public static String decrypt(String key, String text, String map) {
                 int[] keyNode = new int[key.length()];
                 int[] node1 = new int[text.length()];
                 int[] node2 = new int[text.length()];
