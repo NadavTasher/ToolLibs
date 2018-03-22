@@ -228,16 +228,20 @@ public class Net {
     }
 
     public static class Request {
+        public interface OnRequest {
+            void onRequest(String response);
+        }
+
         public static class Post extends AsyncTask<String, String, String> {
             private String phpurl;
             private ArrayList<RequestParameter> parms;
-            private OnPost op;
+            private OnRequest op;
             private String result;
 
-            public Post(String url, RequestParameter[] parameters, OnPost onpost) {
+            public Post(String url, RequestParameter[] parameters, OnRequest onRequest) {
                 this.phpurl = url;
                 parms = new ArrayList<>(Arrays.asList(parameters));
-                op = onpost;
+                op = onRequest;
             }
 
             @Override
@@ -291,13 +295,81 @@ public class Net {
             @Override
             protected void onPostExecute(String s) {
                 if (op != null) {
-                    op.onPost(result);
+                    op.onRequest(result);
                 }
                 super.onPostExecute(s);
             }
+        }
 
-            public interface OnPost {
-                void onPost(String response);
+        public static class Get extends AsyncTask<String, String, String> {
+            private String phpurl;
+            private ArrayList<RequestParameter> parms;
+            private OnRequest op;
+            private String result;
+
+            public Get(String url, RequestParameter[] parameters, OnRequest onRequest) {
+                this.phpurl = url;
+                parms = new ArrayList<>(Arrays.asList(parameters));
+                op = onRequest;
+            }
+
+            @Override
+            protected String doInBackground(String... comments) {
+                String response = "";
+                StringBuilder data = new StringBuilder();
+                BufferedReader reader = null;
+                HttpURLConnection conn = null;
+                try {
+                    if (parms.size() > 0) {
+                        data.append("?");
+                        for (int v = 0; v < parms.size(); v++) {
+                            if (!data.toString().equals("?")) {
+                                data.append("&");
+                            }
+                            data.append(URLEncoder.encode(parms.get(v).getName(), "UTF-8")).append("=").append(URLEncoder.encode(parms.get(v).getValue(), "UTF-8"));
+                        }
+                    }
+                    URL url = new URL(phpurl + data.toString());
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setDoOutput(true);
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    boolean first = true;
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        if (!first) {
+                            sb.append("\n");
+                        } else {
+                            first = false;
+                        }
+                        sb.append(line);
+                    }
+                    response = sb.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (reader != null) {
+                            reader.close();
+                        }
+                        if (conn != null) {
+                            conn.disconnect();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                result = response;
+                return response;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (op != null) {
+                    op.onRequest(result);
+                }
+                super.onPostExecute(s);
             }
         }
 
