@@ -236,7 +236,6 @@ public class Net {
             private String phpurl;
             private ArrayList<RequestParameter> parms;
             private OnRequest op;
-            private String result;
 
             public Post(String url, RequestParameter[] parameters, OnRequest onRequest) {
                 this.phpurl = url;
@@ -246,7 +245,7 @@ public class Net {
 
             @Override
             protected String doInBackground(String... comments) {
-                String response = "";
+                String response = null;
                 StringBuilder data = new StringBuilder();
                 BufferedReader reader = null;
                 HttpURLConnection conn = null;
@@ -288,14 +287,13 @@ public class Net {
                         ex.printStackTrace();
                     }
                 }
-                result = response;
                 return response;
             }
 
             @Override
             protected void onPostExecute(String s) {
                 if (op != null) {
-                    op.onRequest(result);
+                    op.onRequest(s);
                 }
                 super.onPostExecute(s);
             }
@@ -305,7 +303,6 @@ public class Net {
             private String phpurl;
             private ArrayList<RequestParameter> parms;
             private OnRequest op;
-            private String result;
 
             public Get(String url, RequestParameter[] parameters, OnRequest onRequest) {
                 this.phpurl = url;
@@ -315,7 +312,7 @@ public class Net {
 
             @Override
             protected String doInBackground(String... comments) {
-                String response = "";
+                String response = null;
                 StringBuilder data = new StringBuilder();
                 BufferedReader reader = null;
                 HttpURLConnection conn = null;
@@ -360,14 +357,13 @@ public class Net {
                         ex.printStackTrace();
                     }
                 }
-                result = response;
                 return response;
             }
 
             @Override
             protected void onPostExecute(String s) {
                 if (op != null) {
-                    op.onRequest(result);
+                    op.onRequest(s);
                 }
                 super.onPostExecute(s);
             }
