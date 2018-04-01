@@ -1,4 +1,4 @@
-package nadav.tasher.lightool;
+package nadav.tasher.lightool.modularity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

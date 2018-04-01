@@ -1,4 +1,4 @@
-package nadav.tasher.lightool;
+package nadav.tasher.lightool.communication;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,10 @@ public class Tunnel<T>{
 
     public Tunnel(){
 
+    }
+
+    public Tunnel(T initial){
+        send(initial);
     }
 
     public void addReceiver(OnTunnel<T> tunnel){
@@ -22,6 +26,14 @@ public class Tunnel<T>{
         comm.add(s);
         for(int a=0;a<onTunnel.size();a++){
             onTunnel.get(a).onReceive(s);
+        }
+    }
+
+    public T getLast(){
+        if(comm.size()>0) {
+            return comm.get(comm.size() - 1);
+        }else{
+            return null;
         }
     }
 

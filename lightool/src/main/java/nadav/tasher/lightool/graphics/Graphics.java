@@ -1,4 +1,4 @@
-package nadav.tasher.lightool;
+package nadav.tasher.lightool.graphics;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -13,6 +13,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import nadav.tasher.lightool.tools.Device;
 
 public class Graphics {
     public static class DragNavigation extends LinearLayout {

@@ -1,4 +1,4 @@
-package nadav.tasher.lightool;
+package nadav.tasher.lightool.communication;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -19,8 +19,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Net {
-    public static class NetFile {
+public class Network {
+    public static class NetworkFile {
         public static class FileChecker extends AsyncTask<String, String, String> {
             private long kbs;
             private String addr;
