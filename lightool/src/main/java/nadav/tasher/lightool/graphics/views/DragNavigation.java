@@ -42,6 +42,7 @@ public class DragNavigation extends LinearLayout {
     }
 
     private void init() {
+        backgroundColor=Color.argb(128,Color.red(backgroundColor),Color.green(backgroundColor),Color.blue(backgroundColor));
         final int y = Device.screenY(getContext());
         final int logoSize = (y / 8) - (y / 30);
         smallNavigation = y / 8;
@@ -213,7 +214,10 @@ public class DragNavigation extends LinearLayout {
         int redB = Color.red(colorB);
         int greenB = Color.green(colorB);
         int blueB = Color.blue(colorB);
+        int alphaA= Color.alpha(colorA);
+        int alphaB= Color.alpha(colorB);
         int combineRed = redA - (redA - redB) / 2, combineGreen = greenA - (greenA - greenB) / 2, combineBlue = blueA - (blueA - blueB) / 2;
+        int combineAlpha= alphaA - (alphaA-alphaB)/2;
         return Color.rgb(combineRed, combineGreen, combineBlue);
     }
 
