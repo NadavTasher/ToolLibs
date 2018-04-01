@@ -228,28 +228,36 @@ public class Network {
     }
 
     public static class Request {
-        public interface OnRequest {
-            void onRequest(String response);
-        }
-
-        public static class Post extends AsyncTask<String, String, String> {
+        public static class Post extends AsyncTask<Tunnel<SessionStatus>, Tunnel<SessionStatus>, SessionStatus> {
             private String phpurl;
             private ArrayList<RequestParameter> parms;
-            private OnRequest op;
+            private OnFinish op;
 
-            public Post(String url, RequestParameter[] parameters, OnRequest onRequest) {
+            public Post(String url, RequestParameter[] parameters, OnFinish onFinish) {
                 this.phpurl = url;
                 parms = new ArrayList<>(Arrays.asList(parameters));
-                op = onRequest;
+                op = onFinish;
+            }
+
+            private void sendStatus(SessionStatus ss, Tunnel<SessionStatus>[] tns) {
+                for (int t = 0; t < tns.length; t++) {
+                    tns[t].send(ss);
+                }
             }
 
             @Override
-            protected String doInBackground(String... comments) {
+            protected SessionStatus doInBackground(Tunnel<SessionStatus>... tunnels) {
+                SessionStatus currentStatus = new SessionStatus();
+                sendStatus(currentStatus, tunnels);
+                currentStatus.setStatus(SessionStatus.STARTING);
+                sendStatus(currentStatus, tunnels);
                 String response = null;
                 StringBuilder data = new StringBuilder();
                 BufferedReader reader = null;
                 HttpURLConnection conn = null;
                 try {
+                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
+                    sendStatus(currentStatus, tunnels);
                     URL url = new URL(phpurl);
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
@@ -264,6 +272,8 @@ public class Network {
                     StringBuilder sb = new StringBuilder();
                     boolean first = true;
                     String line;
+                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
+                    sendStatus(currentStatus, tunnels);
                     while ((line = reader.readLine()) != null) {
                         if (!first) {
                             sb.append("\n");
@@ -275,7 +285,11 @@ public class Network {
                     response = sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    currentStatus.setStatus(SessionStatus.NOT_FINISHED_FAILED);
+                    sendStatus(currentStatus, tunnels);
                 } finally {
+                    currentStatus.setStatus(SessionStatus.FINISHING);
+                    sendStatus(currentStatus, tunnels);
                     try {
                         if (reader != null) {
                             reader.close();
@@ -285,38 +299,55 @@ public class Network {
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                        currentStatus.setStatus(SessionStatus.FINISHING_FAILED);
+                        sendStatus(currentStatus, tunnels);
                     }
                 }
-                return response;
+                currentStatus.setStatus(SessionStatus.FINISHED_SUCCESS);
+                currentStatus.setExtra(response);
+                sendStatus(currentStatus, tunnels);
+                return currentStatus;
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                if (op != null) {
-                    op.onRequest(s);
-                }
+            protected void onPostExecute(SessionStatus s) {
                 super.onPostExecute(s);
+                if (op != null) {
+                    op.onFinish(s);
+                }
             }
         }
 
-        public static class Get extends AsyncTask<String, String, String> {
+        public static class Get extends AsyncTask<Tunnel<SessionStatus>, Tunnel<SessionStatus>, SessionStatus> {
             private String phpurl;
             private ArrayList<RequestParameter> parms;
-            private OnRequest op;
+            private OnFinish op;
 
-            public Get(String url, RequestParameter[] parameters, OnRequest onRequest) {
+            public Get(String url, RequestParameter[] parameters, OnFinish onFinish) {
                 this.phpurl = url;
                 parms = new ArrayList<>(Arrays.asList(parameters));
-                op = onRequest;
+                op = onFinish;
+            }
+
+            private void sendStatus(SessionStatus ss, Tunnel<SessionStatus>[] tns) {
+                for (int t = 0; t < tns.length; t++) {
+                    tns[t].send(ss);
+                }
             }
 
             @Override
-            protected String doInBackground(String... comments) {
+            protected SessionStatus doInBackground(Tunnel<SessionStatus>... tunnels) {
+                SessionStatus currentStatus = new SessionStatus();
+                sendStatus(currentStatus, tunnels);
+                currentStatus.setStatus(SessionStatus.STARTING);
+                sendStatus(currentStatus, tunnels);
                 String response = null;
                 StringBuilder data = new StringBuilder();
                 BufferedReader reader = null;
                 HttpURLConnection conn = null;
                 try {
+                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
+                    sendStatus(currentStatus, tunnels);
                     if (parms.size() > 0) {
                         data.append("?");
                         for (int v = 0; v < parms.size(); v++) {
@@ -334,6 +365,8 @@ public class Network {
                     StringBuilder sb = new StringBuilder();
                     boolean first = true;
                     String line;
+                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
+                    sendStatus(currentStatus, tunnels);
                     while ((line = reader.readLine()) != null) {
                         if (!first) {
                             sb.append("\n");
@@ -345,7 +378,11 @@ public class Network {
                     response = sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    currentStatus.setStatus(SessionStatus.NOT_FINISHED_FAILED);
+                    sendStatus(currentStatus, tunnels);
                 } finally {
+                    currentStatus.setStatus(SessionStatus.FINISHING);
+                    sendStatus(currentStatus, tunnels);
                     try {
                         if (reader != null) {
                             reader.close();
@@ -355,17 +392,22 @@ public class Network {
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                        currentStatus.setStatus(SessionStatus.FINISHING_FAILED);
+                        sendStatus(currentStatus, tunnels);
                     }
                 }
-                return response;
+                currentStatus.setStatus(SessionStatus.FINISHED_SUCCESS);
+                currentStatus.setExtra(response);
+                sendStatus(currentStatus, tunnels);
+                return currentStatus;
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                if (op != null) {
-                    op.onRequest(s);
-                }
+            protected void onPostExecute(SessionStatus s) {
                 super.onPostExecute(s);
+                if (op != null) {
+                    op.onFinish(s);
+                }
             }
         }
 
