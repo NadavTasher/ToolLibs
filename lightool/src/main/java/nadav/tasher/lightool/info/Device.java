@@ -1,4 +1,4 @@
-package nadav.tasher.lightool.tools;
+package nadav.tasher.lightool.info;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
