@@ -44,7 +44,9 @@ public class ModularJSON {
                             }
                             super.subModules.add(new OptionModule(name, converted));
                         } else if (masterObject.get(name) instanceof JSONObject) {
-                            super.subModules.add(new MasterModule(masterObject.getJSONObject(name)));
+                            MasterModule masterModule = new MasterModule(masterObject.getJSONObject(name));
+                            masterModule.name = name;
+                            super.subModules.add(masterModule);
                         }
                     }
                 } catch (JSONException ignored) {
