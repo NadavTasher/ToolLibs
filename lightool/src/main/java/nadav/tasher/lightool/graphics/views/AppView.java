@@ -13,10 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 public class AppView extends FrameLayout {
-    FrameLayout content;
-    LinearLayout scrolly;
-    DragNavigation dragNavigation;
-    int currentColor = Color.WHITE;
+    private FrameLayout content;
+    private LinearLayout scrolly;
+    private DragNavigation dragNavigation;
+    private int currentColor = Color.WHITE;
 
     public AppView(Context context, Drawable icon, int dragColor) {
         super(context);
@@ -34,12 +34,19 @@ public class AppView extends FrameLayout {
         addView(dragNavigation);
     }
 
-    public void setOnState(DragNavigation.OnStateChangedListener onState){
-        dragNavigation.setOnStateChangedListener(onState);
+    public DragNavigation getDragNavigation(){
+        return dragNavigation;
     }
 
-    public void setOnIconClick(OnClickListener onIconClick){
-        dragNavigation.setOnIconClick(onIconClick);
+    public void setContent(View v){
+        if(content!=null){
+            content.removeAllViews();
+            content.addView(v);
+        }
+    }
+
+    public int getBackgroundColor(){
+        return currentColor;
     }
 
     public void overlaySelf(Window w) {
