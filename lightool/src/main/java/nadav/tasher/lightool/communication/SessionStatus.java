@@ -1,15 +1,15 @@
 package nadav.tasher.lightool.communication;
 
 public class SessionStatus {
-    static final int IDLE=0;
-    static final int STARTING=1;
-    static final int IN_PROGRESS=2;
-    static final int FINISHING=3;
-    static final int NOT_FINISHED_FAILED=4;
-    static final int FINISHED_SUCCESS=5;
-    static final int FINISHED_FAILED=6;
-    static final int FINISHING_FAILED=7;
-    static final int STARTING_FAILED=7;
+    public static final int IDLE=0;
+    public static final int STARTING=1;
+    public static final int IN_PROGRESS=2;
+    public static final int FINISHING=3;
+    public static final int NOT_FINISHED_FAILED=4;
+    public static final int FINISHED_SUCCESS=5;
+    public static final int FINISHED_FAILED=6;
+    public static final int FINISHING_FAILED=7;
+    public static final int STARTING_FAILED=7;
     private int status=IDLE;
     private String extra=null;
     public SessionStatus(){}
