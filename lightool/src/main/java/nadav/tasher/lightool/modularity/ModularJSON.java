@@ -9,26 +9,26 @@ import java.util.Iterator;
 
 public class ModularJSON {
     public static class Module {
-        ArrayList<Module> subModules = null;
-        String name = null, value = null;
-        String[] options = null;
+        public ArrayList<Module> subModules = null;
+        public String name = null, value = null;
+        public String[] options = null;
 
         public static class OptionModule extends Module {
-            OptionModule(String name, String[] options) {
+            public OptionModule(String name, String[] options) {
                 super.name = name;
                 super.options = options;
             }
         }
 
         public static class ValueModule extends Module {
-            ValueModule(String name, String value) {
+            public ValueModule(String name, String value) {
                 super.name = name;
                 super.value = value;
             }
         }
 
         public static class MasterModule extends Module {
-            MasterModule(JSONObject masterObject) {
+            public MasterModule(JSONObject masterObject) {
                 super.subModules = new ArrayList<>();
                 try {
                     Iterator<String> types = masterObject.keys();
