@@ -26,6 +26,7 @@ public class DragNavigation extends LinearLayout {
     private boolean isOpen = false;
     private OnStateChangedListener onstate;
     private LinearLayout pullOff;
+    private float completeZero;
 
     public DragNavigation(Context context) {
         super(context);
@@ -42,7 +43,7 @@ public class DragNavigation extends LinearLayout {
     }
 
     private void init() {
-        backgroundColor=Color.argb(128,Color.red(backgroundColor),Color.green(backgroundColor),Color.blue(backgroundColor));
+        backgroundColor = Color.argb(128, Color.red(backgroundColor), Color.green(backgroundColor), Color.blue(backgroundColor));
         final int y = Device.screenY(getContext());
         final int logoSize = (y / 8) - (y / 30);
         smallNavigation = y / 8;
@@ -69,7 +70,7 @@ public class DragNavigation extends LinearLayout {
         addView(upContent);
         addView(pullOff);
         pullOff.addView(iconHolder);
-        final float completeZero = -navFullY + smallNavigation;
+        completeZero = -navFullY + smallNavigation;
         setY(completeZero);
         setOnTouchListener(new OnTouchListener() {
 
@@ -88,68 +89,84 @@ public class DragNavigation extends LinearLayout {
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         //                                Log.i("Y", String.valueOf(getY()));
-                        if (getY() >= (-getHeight() / 2) + smallNavigation / 2) {
-                            ObjectAnimator oa = ObjectAnimator.ofFloat(DragNavigation.this, View.TRANSLATION_Y, getY(), 0);
-                            oa.setDuration(300);
-                            oa.setInterpolator(new LinearInterpolator());
-                            oa.addListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    touchable = false;
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    touchable = true;
-                                    if (!isOpen) {
-                                        if (onstate != null) onstate.onOpen();
-                                    }
-                                    isOpen = true;
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-                                }
-                            });
-                            oa.start();
-                        } else {
-                            ObjectAnimator oa = ObjectAnimator.ofFloat(DragNavigation.this, View.TRANSLATION_Y, getY(), completeZero);
-                            oa.setDuration(300);
-                            oa.setInterpolator(new LinearInterpolator());
-                            oa.addListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    touchable = false;
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    touchable = true;
-                                    if (isOpen) {
-                                        if (onstate != null) onstate.onClose();
-                                    }
-                                    isOpen = false;
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-                                }
-                            });
-                            oa.start();
-                        }
+                        toggle(true);
                     }
                 }
                 return true;
             }
         });
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void toggle(final boolean runAction) {
+        if (getY() >= (-getHeight() / 2) + smallNavigation / 2) {
+            open(runAction);
+        } else {
+            close(runAction);
+        }
+    }
+
+    public void open(final boolean runAction) {
+        ObjectAnimator oa = ObjectAnimator.ofFloat(DragNavigation.this, View.TRANSLATION_Y, getY(), 0);
+        oa.setDuration(300);
+        oa.setInterpolator(new LinearInterpolator());
+        oa.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                touchable = false;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                touchable = true;
+                if (!isOpen && runAction) {
+                    if (onstate != null) onstate.onOpen();
+                }
+                isOpen = true;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        oa.start();
+    }
+
+    public void close(final boolean runAction) {
+        ObjectAnimator oa = ObjectAnimator.ofFloat(DragNavigation.this, View.TRANSLATION_Y, getY(), completeZero);
+        oa.setDuration(300);
+        oa.setInterpolator(new LinearInterpolator());
+        oa.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                touchable = false;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                touchable = true;
+                if (isOpen && runAction) {
+                    if (onstate != null) onstate.onClose();
+                }
+                isOpen = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        oa.start();
     }
 
     public void setIcon(Drawable icon) {
@@ -214,10 +231,10 @@ public class DragNavigation extends LinearLayout {
         int redB = Color.red(colorB);
         int greenB = Color.green(colorB);
         int blueB = Color.blue(colorB);
-        int alphaA= Color.alpha(colorA);
-        int alphaB= Color.alpha(colorB);
+        int alphaA = Color.alpha(colorA);
+        int alphaB = Color.alpha(colorB);
         int combineRed = redA - (redA - redB) / 2, combineGreen = greenA - (greenA - greenB) / 2, combineBlue = blueA - (blueA - blueB) / 2;
-        int combineAlpha= alphaA - (alphaA-alphaB)/2;
+        int combineAlpha = alphaA - (alphaA - alphaB) / 2;
         return Color.rgb(combineRed, combineGreen, combineBlue);
     }
 
