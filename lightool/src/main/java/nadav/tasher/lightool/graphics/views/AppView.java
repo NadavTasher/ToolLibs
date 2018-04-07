@@ -72,4 +72,12 @@ public class AppView extends FrameLayout {
     public void setTopColor(int color){
         currentTopColor=color;
     }
+
+    public int getTopColor(){
+        return currentTopColor;
+    }
+
+    public int getBottomColor(){
+        return currentBottomColor;
+    }
 }
