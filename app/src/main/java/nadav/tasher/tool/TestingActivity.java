@@ -8,6 +8,12 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import java.util.ArrayList;
+
+import nadav.tasher.lightool.communication.SessionStatus;
+import nadav.tasher.lightool.communication.Tunnel;
+import nadav.tasher.lightool.communication.network.request.Get;
+import nadav.tasher.lightool.communication.network.request.RequestParameter;
 import nadav.tasher.lightool.graphics.views.AppView;
 import nadav.tasher.lightool.graphics.views.DragNavigation;
 
@@ -29,6 +35,9 @@ public class TestingActivity extends Activity {
                 myApp.getDragNavigation().open(false);
             }
         });
+        Tunnel<SessionStatus> ss=new Tunnel<>();
+        String[] a=new String[]{""};
+        new Get("http://google.com",new RequestParameter[0],null).execute(new SessionStatus.SessionStatusTunnel());
         setContentView(myApp);
     }
 }
