@@ -7,11 +7,15 @@ package nadav.tasher.tool;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
 import nadav.tasher.lightool.communication.SessionStatus;
 import nadav.tasher.lightool.communication.Tunnel;
+import nadav.tasher.lightool.communication.bluetooth.BluetoothSession;
 import nadav.tasher.lightool.communication.network.request.Get;
 import nadav.tasher.lightool.communication.network.request.RequestParameter;
 import nadav.tasher.lightool.graphics.views.AppView;
@@ -24,20 +28,41 @@ public class TestingActivity extends Activity {
         final AppView myApp=new AppView(getApplicationContext(),null,0xFFFFFFFF);
         myApp.setBackgroundColor(Color.BLUE);
         myApp.overlaySelf(getWindow());
+
+        final BluetoothSession session=new BluetoothSession(getApplicationContext(),"20:15:03:16:01:96",10);
+        session.registerIncoming(new Tunnel.OnTunnel<String>() {
+            @Override
+            public void onReceive(String response) {
+                Log.i("BT",response);
+            }
+        });
+        Button b=new Button(this);
+        myApp.setContent(b);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SessionStatus.SessionStatusTunnel sst=new SessionStatus.SessionStatusTunnel();
+                sst.addReceiver(new Tunnel.OnTunnel<SessionStatus>() {
+                    @Override
+                    public void onReceive(SessionStatus response) {
+                        Log.i("BTS",""+response.getExtra());
+                    }
+                });
+                session.execute(sst);
+            }
+        });
         myApp.getDragNavigation().setOnStateChangedListener(new DragNavigation.OnStateChangedListener() {
             @Override
             public void onOpen() {
-                myApp.getDragNavigation().close(true);
+                session.send("Hi");
+
             }
 
             @Override
             public void onClose() {
-                myApp.getDragNavigation().open(false);
+                session.close();
             }
         });
-        Tunnel<SessionStatus> ss=new Tunnel<>();
-        String[] a=new String[]{""};
-        new Get("http://google.com",new RequestParameter[0],null).execute(new SessionStatus.SessionStatusTunnel());
         setContentView(myApp);
     }
 }
