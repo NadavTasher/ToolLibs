@@ -29,7 +29,8 @@ public class AppView extends FrameLayout {
         scrolly = new LinearLayout(context);
         scrolly.setOrientation(LinearLayout.VERTICAL);
         scrolly.setGravity(Gravity.CENTER);
-        scrolly.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+        scrollView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+        scrollView.setVerticalScrollBarEnabled(false);
         scrollView.addView(scrolly);
         scrolly.addView(new View(context), new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dragNavigation.spacerSize()));
         scrolly.addView(content);
