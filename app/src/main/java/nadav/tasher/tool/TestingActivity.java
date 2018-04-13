@@ -25,7 +25,7 @@ public class TestingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final AppView myApp=new AppView(getApplicationContext(),null,0xFFFFFFFF);
+        final AppView myApp=new AppView(getApplicationContext(),null,0x333333);
         myApp.setBackgroundColor(Color.BLUE);
         myApp.overlaySelf(getWindow());
 
