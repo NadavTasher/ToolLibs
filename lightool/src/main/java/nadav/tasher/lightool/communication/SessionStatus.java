@@ -9,7 +9,9 @@ public class SessionStatus {
     public static final int FINISHED_SUCCESS = 5;
     public static final int FINISHED_FAILED = 6;
     public static final int FINISHING_FAILED = 7;
-    public static final int STARTING_FAILED = 7;
+    public static final int STARTING_FAILED = 8;
+    public static final int CONNECTED = 9;
+    public static final int DISCONNECTED = 10;
     private int status = IDLE;
     private String extra = null;
 

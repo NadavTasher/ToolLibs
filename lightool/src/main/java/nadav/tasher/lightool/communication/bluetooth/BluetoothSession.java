@@ -107,6 +107,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
                         while (!socket.isConnected())
                             currentStatus.setStatus(SessionStatus.IN_PROGRESS);
                         sendStatus();
+                        currentStatus.setStatus(SessionStatus.CONNECTED);
                         outgoingTunnel.addReceiver(new Tunnel.OnTunnel<String>() {
                             @Override
                             public void onReceive(String response) {
@@ -145,6 +146,8 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
                                 e.printStackTrace();
                             }
                         }
+                        currentStatus.setStatus(SessionStatus.DISCONNECTED);
+                        sendStatus();
                     } catch (IOException e) {
                         currentStatus.setStatus(SessionStatus.FINISHED_FAILED);
                         sendStatus();
