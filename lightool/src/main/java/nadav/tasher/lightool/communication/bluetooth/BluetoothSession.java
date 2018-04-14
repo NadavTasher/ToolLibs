@@ -135,7 +135,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
                                 if (!(caught.toString() + total.toString()).equals(caught.toString())) {
                                     caught.append(total.toString());
                                     incomingTunnel.send(caught.toString());
-                                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
+                                    currentStatus.setStatus(SessionStatus.IDLE);
                                     sendStatus();
                                 }
                             } catch (IOException e) {
