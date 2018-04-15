@@ -19,6 +19,7 @@ import nadav.tasher.lightool.info.Device;
 public class DragNavigation extends LinearLayout {
     private Drawable icon;
     private FrameLayout upContent;
+    private View currentContent;
     private ImageView iconHolder;
     private LinearLayout.LayoutParams iconParams, navigationParms;
     private int smallNavigation, backgroundColor;
@@ -181,6 +182,11 @@ public class DragNavigation extends LinearLayout {
     public void setContent(View v) {
         upContent.removeAllViews();
         upContent.addView(v);
+        currentContent=v;
+    }
+
+    public View getContent(){
+        return currentContent;
     }
 
     public void setOnIconClick(View.OnClickListener ocl) {
