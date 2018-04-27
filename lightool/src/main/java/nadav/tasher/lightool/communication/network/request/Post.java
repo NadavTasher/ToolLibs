@@ -14,7 +14,7 @@ import java.util.Arrays;
 import nadav.tasher.lightool.communication.OnFinish;
 import nadav.tasher.lightool.communication.SessionStatus;
 
-public class Post extends AsyncTask<SessionStatus.SessionStatusTunnel, SessionStatus.SessionStatusTunnel, SessionStatus> {
+public class Post extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
     private String phpurl;
     private ArrayList<RequestParameter> parms;
     private OnFinish op;
@@ -25,14 +25,14 @@ public class Post extends AsyncTask<SessionStatus.SessionStatusTunnel, SessionSt
         op = onFinish;
     }
 
-    private void sendStatus(SessionStatus ss, SessionStatus.SessionStatusTunnel[] tns) {
+    private void sendStatus(SessionStatus ss, SessionStatus.SessionStatusTower[] tns) {
         for (int t = 0; t < tns.length; t++) {
             tns[t].send(ss);
         }
     }
 
     @Override
-    protected SessionStatus doInBackground(SessionStatus.SessionStatusTunnel... tunnels) {
+    protected SessionStatus doInBackground(SessionStatus.SessionStatusTower... tunnels) {
         SessionStatus currentStatus = new SessionStatus();
         sendStatus(currentStatus, tunnels);
         currentStatus.setStatus(SessionStatus.STARTING);

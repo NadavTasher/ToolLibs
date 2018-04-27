@@ -12,9 +12,9 @@ import java.util.UUID;
 
 import nadav.tasher.lightool.communication.OnFinish;
 import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.communication.Tunnel;
+import nadav.tasher.lightool.parts.communication.Tower;
 
-public class BluetoothQuickSession extends AsyncTask<SessionStatus.SessionStatusTunnel, SessionStatus.SessionStatusTunnel, SessionStatus> {
+public class BluetoothQuickSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
     private Context context;
     private String address, data;
     private OnFinish onFinish;
@@ -26,14 +26,14 @@ public class BluetoothQuickSession extends AsyncTask<SessionStatus.SessionStatus
         this.data = data;
     }
 
-    private void sendStatus(SessionStatus ss, Tunnel<SessionStatus>[] tns) {
+    private void sendStatus(SessionStatus ss, Tower<SessionStatus>[] tns) {
         for (int t = 0; t < tns.length; t++) {
             tns[t].send(ss);
         }
     }
 
     @Override
-    protected SessionStatus doInBackground(SessionStatus.SessionStatusTunnel... tunnels) {
+    protected SessionStatus doInBackground(SessionStatus.SessionStatusTower... tunnels) {
         SessionStatus currentStatus = new SessionStatus();
         sendStatus(currentStatus, tunnels);
         currentStatus.setStatus(SessionStatus.STARTING);

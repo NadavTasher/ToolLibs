@@ -1,5 +1,7 @@
 package nadav.tasher.lightool.communication;
 
+import nadav.tasher.lightool.parts.communication.Tower;
+
 public class SessionStatus {
     public static final int IDLE = 0;
     public static final int STARTING = 1;
@@ -38,6 +40,6 @@ public class SessionStatus {
         extra = s;
     }
 
-    public static class SessionStatusTunnel extends Tunnel<SessionStatus> {
+    public static class SessionStatusTower extends Tower<SessionStatus> {
     }
 }

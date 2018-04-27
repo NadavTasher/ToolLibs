@@ -13,23 +13,23 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.communication.Tunnel;
+import nadav.tasher.lightool.parts.communication.Tower;
 
-public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunnel, SessionStatus.SessionStatusTunnel, SessionStatus> {
+public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
     private Context context;
     private String address;
-    private Tunnel<String> incomingTunnel, outgoingTunnel;
+    private Tower<String> incomingTower, outgoingTower;
     private BluetoothSocket socket;
     private SessionStatus currentStatus;
     private int sample;
-    private SessionStatus.SessionStatusTunnel[] tunnels;
+    private SessionStatus.SessionStatusTower[] tunnels;
 
     public BluetoothSession(Context context, String address, int samplingRateHz) {
         this.context = context;
         this.address = address;
         this.sample = 1000 / samplingRateHz;
-        incomingTunnel = new Tunnel<>();
-        outgoingTunnel = new Tunnel<>();
+        incomingTower = new Tower<>();
+        outgoingTower = new Tower<>();
     }
 
     private void sendStatus() {
@@ -39,7 +39,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
     }
 
     public void send(String s) {
-        outgoingTunnel.send(s);
+        outgoingTower.send(s);
     }
 
     public void close() {
@@ -61,12 +61,12 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
         }
     }
 
-    public void registerIncoming(Tunnel.OnTunnel<String> onTunnel) {
-        incomingTunnel.addReceiver(onTunnel);
+    public void registerIncoming(Tower.OnTunnel<String> onTunnel) {
+        incomingTower.addReceiver(onTunnel);
     }
 
-    public void unregisterIncoming(Tunnel.OnTunnel<String> onTunnel) {
-        incomingTunnel.removeReceiver(onTunnel);
+    public void unregisterIncoming(Tower.OnTunnel<String> onTunnel) {
+        incomingTower.removeReceiver(onTunnel);
     }
 
     public boolean isConnected() {
@@ -78,7 +78,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
     }
 
     @Override
-    protected SessionStatus doInBackground(SessionStatus.SessionStatusTunnel... tunnels) {
+    protected SessionStatus doInBackground(SessionStatus.SessionStatusTower... tunnels) {
         this.tunnels = tunnels;
         currentStatus = new SessionStatus();
         sendStatus();
@@ -107,7 +107,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
                         while (!socket.isConnected())
                             currentStatus.setStatus(SessionStatus.IN_PROGRESS);
                         sendStatus();
-                        outgoingTunnel.addReceiver(new Tunnel.OnTunnel<String>() {
+                        outgoingTower.addReceiver(new Tower.OnTunnel<String>() {
                             @Override
                             public void onReceive(String response) {
                                 if (socket != null) {
@@ -134,7 +134,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTunne
                                 }
                                 if (!(caught.toString() + total.toString()).equals(caught.toString())) {
                                     caught.append(total.toString());
-                                    incomingTunnel.send(caught.toString());
+                                    incomingTower.send(caught.toString());
                                     currentStatus.setStatus(SessionStatus.IDLE);
                                     sendStatus();
                                 }

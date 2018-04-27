@@ -11,13 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.ArrayList;
-
 import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.communication.Tunnel;
+import nadav.tasher.lightool.parts.communication.Tower;
 import nadav.tasher.lightool.communication.bluetooth.BluetoothSession;
-import nadav.tasher.lightool.communication.network.request.Get;
-import nadav.tasher.lightool.communication.network.request.RequestParameter;
 import nadav.tasher.lightool.graphics.views.AppView;
 import nadav.tasher.lightool.graphics.views.DragNavigation;
 
@@ -30,7 +26,7 @@ public class TestingActivity extends Activity {
         myApp.overlaySelf(getWindow());
 
         final BluetoothSession session=new BluetoothSession(getApplicationContext(),"20:15:03:16:01:96",10);
-        session.registerIncoming(new Tunnel.OnTunnel<String>() {
+        session.registerIncoming(new Tower.OnTunnel<String>() {
             @Override
             public void onReceive(String response) {
                 Log.i("BT",response);
@@ -41,8 +37,8 @@ public class TestingActivity extends Activity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionStatus.SessionStatusTunnel sst=new SessionStatus.SessionStatusTunnel();
-                sst.addReceiver(new Tunnel.OnTunnel<SessionStatus>() {
+                SessionStatus.SessionStatusTower sst=new SessionStatus.SessionStatusTower();
+                sst.addReceiver(new Tower.OnTunnel<SessionStatus>() {
                     @Override
                     public void onReceive(SessionStatus response) {
                         Log.i("BTS",""+response.getExtra());
