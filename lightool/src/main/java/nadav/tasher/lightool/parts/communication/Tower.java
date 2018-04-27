@@ -2,13 +2,15 @@ package nadav.tasher.lightool.parts.communication;
 
 import java.util.ArrayList;
 
-public class Tube<T> {
-    public static final int SUCCESS = -1;
-
+public class Tower<T> {
     public ArrayList<T> datas = new ArrayList<>();
     public ArrayList<Peer<T>> peers = new ArrayList<>();
 
-    public Tube() {
+    public Tower() {
+    }
+
+    public Tower(T initial) {
+        tell(initial);
     }
 
     public void addPeer(Peer<T> peer) {
@@ -19,17 +21,13 @@ public class Tube<T> {
         peers.remove(peer);
     }
 
-    public int blow(T s) {
+    public void tell(T s) {
         datas.add(s);
         for (int a = 0; a < peers.size(); a++) {
             if (peers.get(a) != null) {
-                boolean result = peers.get(a).ask(s);
-                if (!result) {
-                    return a;
-                }
+                peers.get(a).tell(s);
             }
         }
-        return SUCCESS;
     }
 
     public T getLast() {
