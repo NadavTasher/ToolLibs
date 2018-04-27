@@ -14,8 +14,8 @@ import android.widget.Button;
 import nadav.tasher.lightool.communication.SessionStatus;
 import nadav.tasher.lightool.parts.Tower;
 import nadav.tasher.lightool.communication.bluetooth.BluetoothSession;
-import nadav.tasher.lightool.graphics.views.AppView;
-import nadav.tasher.lightool.graphics.views.DragNavigation;
+import nadav.tasher.lightool.graphics.views.appview.AppView;
+import nadav.tasher.lightool.graphics.views.appview.navigation.Drag;
 
 public class TestingActivity extends Activity {
     @Override
@@ -47,7 +47,7 @@ public class TestingActivity extends Activity {
                 session.execute(sst);
             }
         });
-        myApp.getDragNavigation().setOnStateChangedListener(new DragNavigation.OnStateChangedListener() {
+        myApp.getDrag().setOnStateChangedListener(new Drag.OnStateChangedListener() {
             @Override
             public void onOpen() {
                 session.send("Hi");

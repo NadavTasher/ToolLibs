@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 import nadav.tasher.lightool.communication.SessionStatus;
+import nadav.tasher.lightool.parts.Peer;
 import nadav.tasher.lightool.parts.Tower;
 
 public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
@@ -34,12 +35,12 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
 
     private void sendStatus() {
         for (int t = 0; t < tunnels.length; t++) {
-            tunnels[t].send(currentStatus);
+            tunnels[t].tell(currentStatus);
         }
     }
 
     public void send(String s) {
-        outgoingTower.send(s);
+        outgoingTower.tell(s);
     }
 
     public void close() {
@@ -61,12 +62,12 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
         }
     }
 
-    public void registerIncoming(Tower.OnTunnel<String> onTunnel) {
-        incomingTower.addReceiver(onTunnel);
+    public void registerIncoming(Peer<String> peer) {
+        incomingTower.addPeer(peer);
     }
 
-    public void unregisterIncoming(Tower.OnTunnel<String> onTunnel) {
-        incomingTower.removeReceiver(onTunnel);
+    public void unregisterIncoming(Peer<String> peer) {
+        incomingTower.removePeer(peer);
     }
 
     public boolean isConnected() {
@@ -107,20 +108,21 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
                         while (!socket.isConnected())
                             currentStatus.setStatus(SessionStatus.IN_PROGRESS);
                         sendStatus();
-                        outgoingTower.addReceiver(new Tower.OnTunnel<String>() {
+                        outgoingTower.addPeer(new Peer<String>(new Peer.OnPeer<String>() {
                             @Override
-                            public void onReceive(String response) {
+                            public boolean onPeer(String data) {
                                 if (socket != null) {
                                     if (socket.isConnected()) {
                                         try {
-                                            socket.getOutputStream().write(response.getBytes());
+                                            socket.getOutputStream().write(data.getBytes());
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
                                     }
                                 }
+                                return true;
                             }
-                        });
+                        }));
                         currentStatus.setStatus(SessionStatus.CONNECTED);
                         sendStatus();
                         BufferedReader r;
@@ -134,7 +136,7 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
                                 }
                                 if (!(caught.toString() + total.toString()).equals(caught.toString())) {
                                     caught.append(total.toString());
-                                    incomingTower.send(caught.toString());
+                                    incomingTower.tell(caught.toString());
                                     currentStatus.setStatus(SessionStatus.IDLE);
                                     sendStatus();
                                 }

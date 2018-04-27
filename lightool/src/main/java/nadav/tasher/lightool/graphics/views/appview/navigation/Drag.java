@@ -1,4 +1,4 @@
-package nadav.tasher.lightool.graphics.views;
+package nadav.tasher.lightool.graphics.views.appview.navigation;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 
 import nadav.tasher.lightool.info.Device;
 
-public class DragNavigation extends LinearLayout {
+public class Drag extends LinearLayout {
     private Drawable icon;
     private FrameLayout upContent;
     private View currentContent;
@@ -29,14 +29,14 @@ public class DragNavigation extends LinearLayout {
     private LinearLayout pullOff;
     private float completeZero;
 
-    public DragNavigation(Context context) {
+    public Drag(Context context) {
         super(context);
         icon = null;
         backgroundColor = Color.BLACK;
         init();
     }
 
-    public DragNavigation(Context context, Drawable icon, int backgroundColor) {
+    public Drag(Context context, Drawable icon, int backgroundColor) {
         super(context);
         this.icon = icon;
         this.backgroundColor = backgroundColor;
@@ -111,7 +111,7 @@ public class DragNavigation extends LinearLayout {
     }
 
     public void open(final boolean runAction) {
-        ObjectAnimator oa = ObjectAnimator.ofFloat(DragNavigation.this, View.TRANSLATION_Y, getY(), 0);
+        ObjectAnimator oa = ObjectAnimator.ofFloat(Drag.this, View.TRANSLATION_Y, getY(), 0);
         oa.setDuration(300);
         oa.setInterpolator(new LinearInterpolator());
         oa.addListener(new Animator.AnimatorListener() {
@@ -141,7 +141,7 @@ public class DragNavigation extends LinearLayout {
     }
 
     public void close(final boolean runAction) {
-        ObjectAnimator oa = ObjectAnimator.ofFloat(DragNavigation.this, View.TRANSLATION_Y, getY(), completeZero);
+        ObjectAnimator oa = ObjectAnimator.ofFloat(Drag.this, View.TRANSLATION_Y, getY(), completeZero);
         oa.setDuration(300);
         oa.setInterpolator(new LinearInterpolator());
         oa.addListener(new Animator.AnimatorListener() {
@@ -179,14 +179,14 @@ public class DragNavigation extends LinearLayout {
         this.backgroundColor = color;
     }
 
+    public View getContent() {
+        return currentContent;
+    }
+
     public void setContent(View v) {
         upContent.removeAllViews();
         upContent.addView(v);
-        currentContent=v;
-    }
-
-    public View getContent(){
-        return currentContent;
+        currentContent = v;
     }
 
     public void setOnIconClick(View.OnClickListener ocl) {

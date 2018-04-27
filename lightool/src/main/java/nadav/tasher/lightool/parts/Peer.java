@@ -48,6 +48,10 @@ public class Peer<T> {
         }
     }
 
+    public void setOnPeer(OnPeer<T> onPeer){
+        this.onPeer=onPeer;
+    }
+
     public ArrayList<T> getDatas() {
         return datas;
     }

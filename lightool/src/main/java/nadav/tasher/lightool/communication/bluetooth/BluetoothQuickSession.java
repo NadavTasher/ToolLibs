@@ -28,7 +28,7 @@ public class BluetoothQuickSession extends AsyncTask<SessionStatus.SessionStatus
 
     private void sendStatus(SessionStatus ss, Tower<SessionStatus>[] tns) {
         for (int t = 0; t < tns.length; t++) {
-            tns[t].send(ss);
+            tns[t].tell(ss);
         }
     }
 
