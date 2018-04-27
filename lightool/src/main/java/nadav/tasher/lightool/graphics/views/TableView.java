@@ -21,15 +21,15 @@ import org.json.JSONObject;
 import nadav.tasher.lightool.R;
 
 public class TableView extends LinearLayout {
-    static final int MODE_RW = 0;
-    static final int MODE_RO = 1;
-    static final int MODE_VO = 2;
-    JSONArray currentData;
-    String[] titles;
-    int mode, size, textcolor;
-    OnChanged onChanged;
-    int removeButtonSize;
-    boolean removeButton = false;
+    public static final int MODE_RW = 0;
+    public static final int MODE_RO = 1;
+    public static final int MODE_VO = 2;
+    private JSONArray currentData;
+    private String[] titles;
+    private int mode, size, textcolor;
+    private OnChanged onChanged;
+    private int removeButtonSize;
+    private boolean removeButton = false;
 
     public TableView(Context context) {
         super(context);
@@ -53,6 +53,10 @@ public class TableView extends LinearLayout {
         removeButton = isShown;
         removeButtonSize = buttonSize;
         init();
+    }
+
+    public JSONArray getCurrentData() {
+        return currentData;
     }
 
     private void init() {
