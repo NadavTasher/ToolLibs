@@ -36,6 +36,7 @@ public class Squircle extends FrameLayout {
     }
 
     private void init() {
+        removeAllViews();
         OnClickListener onClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +108,11 @@ public class Squircle extends FrameLayout {
         this.color = color;
         this.color = Color.argb(128, Color.red(color), Color.green(color), Color.blue(color));
         squircle();
+    }
+
+    public void setMaxXY(int maxXY){
+        this.maxXY=maxXY;
+        init();
     }
 
     public Peer<Integer> getColorPeer() {

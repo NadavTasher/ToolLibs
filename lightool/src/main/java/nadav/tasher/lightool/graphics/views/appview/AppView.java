@@ -71,6 +71,10 @@ public class AppView extends FrameLayout {
         return drag;
     }
 
+    public Bar getBar() {
+        return bar;
+    }
+
     public void setContent(View v) {
         if (content != null) {
             content.removeAllViews();

@@ -70,10 +70,12 @@ public class Bar extends LinearLayout {
         hsv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         addView(hsv);
         setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setPadding(mainHolder.getSidePad(),0,mainHolder.getSidePad(),0);
         close(false);
     }
 
     public void addSquircle(Squircle squircle) {
+        squircle.setMaxXY(mainSquircle.getMaxXY());
         squircleList.add(squircle);
         squircles.addView(new Squircle.Holder(getContext(), squircle));
     }
