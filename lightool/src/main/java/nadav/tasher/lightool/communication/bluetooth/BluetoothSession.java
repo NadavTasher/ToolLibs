@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.parts.communication.Tower;
+import nadav.tasher.lightool.parts.Tower;
 
 public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
     private Context context;

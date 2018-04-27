@@ -1,6 +1,6 @@
 package nadav.tasher.lightool.communication;
 
-import nadav.tasher.lightool.parts.communication.Tower;
+import nadav.tasher.lightool.parts.Tower;
 
 public class SessionStatus {
     public static final int IDLE = 0;

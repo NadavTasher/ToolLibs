@@ -1,4 +1,4 @@
-package nadav.tasher.lightool.parts.communication;
+package nadav.tasher.lightool.parts;
 
 import java.util.ArrayList;
 

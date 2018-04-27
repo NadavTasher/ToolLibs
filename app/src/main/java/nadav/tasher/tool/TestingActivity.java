@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.parts.communication.Tower;
+import nadav.tasher.lightool.parts.Tower;
 import nadav.tasher.lightool.communication.bluetooth.BluetoothSession;
 import nadav.tasher.lightool.graphics.views.AppView;
 import nadav.tasher.lightool.graphics.views.DragNavigation;

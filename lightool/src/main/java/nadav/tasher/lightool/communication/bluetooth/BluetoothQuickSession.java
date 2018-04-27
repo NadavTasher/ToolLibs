@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import nadav.tasher.lightool.communication.OnFinish;
 import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.parts.communication.Tower;
+import nadav.tasher.lightool.parts.Tower;
 
 public class BluetoothQuickSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
     private Context context;
