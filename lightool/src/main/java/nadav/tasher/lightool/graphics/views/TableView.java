@@ -132,7 +132,7 @@ public class TableView extends LinearLayout {
         }
     }
 
-    interface OnChanged {
+    public interface OnChanged {
         void onChanged(JSONArray nowData);
     }
 
