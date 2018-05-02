@@ -96,6 +96,10 @@ public class Squircle extends FrameLayout {
         return contentXY;
     }
 
+    public void setTypeface(Typeface t) {
+        typeface = t;
+    }
+
     public int getMaxXY() {
         return maxXY;
     }
