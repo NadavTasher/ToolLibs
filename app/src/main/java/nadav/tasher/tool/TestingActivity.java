@@ -24,9 +24,11 @@ public class TestingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Squircle s=new Squircle(getApplicationContext(), Device.screenX(getApplicationContext())/5,0x123456);
+        s.setDrawable(getDrawable(R.drawable.ic_add));
         Squircle s2=new Squircle(getApplicationContext(), Device.screenX(getApplicationContext())/3,0x128956);
+        s2.setDrawable(getDrawable(R.drawable.ic_delete));
         final AppView myApp=new AppView(getApplicationContext(),null,0x333333,s);
-        myApp.setBackgroundColor(Color.BLUE);
+        myApp.setBackgroundColor(Color.MAGENTA);
         myApp.overlaySelf(getWindow());
         myApp.getBar().addSquircle(s2);
         setContentView(myApp);

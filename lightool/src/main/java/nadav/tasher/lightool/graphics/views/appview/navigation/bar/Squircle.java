@@ -100,6 +100,14 @@ public class Squircle extends FrameLayout {
         return maxXY;
     }
 
+    public void setMaxXY(int maxXY) {
+        this.maxXY = maxXY;
+        contentXY = (int) (maxXY * 0.9);
+        imageXY = (int) (maxXY * 0.6);
+        inside.setLayoutParams(new LayoutParams(maxXY, maxXY));
+        setLayoutParams(new LayoutParams(maxXY, maxXY));
+    }
+
     public int getColor() {
         return color;
     }
@@ -108,11 +116,6 @@ public class Squircle extends FrameLayout {
         this.color = color;
         this.color = Color.argb(128, Color.red(color), Color.green(color), Color.blue(color));
         squircle();
-    }
-
-    public void setMaxXY(int maxXY){
-        this.maxXY=maxXY;
-        init();
     }
 
     public Peer<Integer> getColorPeer() {
@@ -149,7 +152,7 @@ public class Squircle extends FrameLayout {
         }
         inside.removeAllViews();
         inside.addView(getTextView(upper, size + 4, maxXY, color));
-        inside.addView(getTextView(lower, size, contentXY, color));
+        inside.addView(getTextView(lower, size - 10, contentXY, color));
     }
 
     public void setState(boolean state) {
