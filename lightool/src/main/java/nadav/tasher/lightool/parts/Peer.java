@@ -41,10 +41,10 @@ public class Peer<T> {
     }
 
     public void tell(T data) {
+        datas.add(data);
+        currentData = data;
         if (onPeer != null) {
             onPeer.onPeer(data);
-            datas.add(data);
-            currentData = data;
         }
     }
 
