@@ -1,4 +1,4 @@
-package nadav.tasher.lightool.graphics.views.appview.navigation.bar;
+package nadav.tasher.lightool.graphics.views.appview.navigation;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,6 +8,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -142,50 +143,30 @@ public class Squircle extends FrameLayout {
         inside.addView(iv);
     }
 
-    public void setTextColor(int i) {
-        textColorPeer.tell(i);
-    }
-
-    public void setTextSize(int i) {
-        textSizePeer.tell(i);
-    }
-
-    public void setText(int color, int size, String upper, String lower) {
-        if (upper.length() > 4) {
-            upper = upper.substring(0, 4);
-        }
+    public void setText(TextView... texts) {
         inside.removeAllViews();
-        inside.addView(getTextView(upper, size + 4, maxXY, color));
-        inside.addView(getTextView(lower, size - 10, contentXY, color));
+        for (TextView tv : texts) {
+            inside.addView(resetView(tv, maxXY, texts.length));
+        }
     }
 
     public void setState(boolean state) {
         isOpened = state;
     }
 
-    private TextView getTextView(String t, int s, int par, final int textColor) {
-        final TextView v = new TextView(getContext());
-        v.setTextColor(textColor);
-        v.setTextSize(s);
-        v.setText(t);
-        v.setGravity(Gravity.CENTER);
+    private TextView resetView(TextView tv, int maxSize, int tvs) {
+        tv.setGravity(Gravity.CENTER);
         if (typeface != null)
-            v.setTypeface(typeface);
-        v.setLayoutParams(new LinearLayout.LayoutParams(par, par / 2));
-        textColorPeer.setOnPeer(new Peer.OnPeer<Integer>() {
-            @Override
-            public boolean onPeer(Integer data) {
-                v.setTextColor(data);
-                return true;
-            }
-        });
-        textSizePeer.setOnPeer(new Peer.OnPeer<Integer>() {
-            @Override
-            public boolean onPeer(Integer data) {
-                v.setTextSize(data);
-                return true;
-            }
-        });
+            tv.setTypeface(typeface);
+        tv.setLayoutParams(new LinearLayout.LayoutParams(maxSize, maxSize / tvs));
+        return tv;
+    }
+
+    public static TextView getTextView(Context c,String t, int size,final int textColor) {
+        final TextView v = new TextView(c);
+        v.setTextColor(textColor);
+        v.setTextSize(size);
+        v.setText(t);
         return v;
     }
 
@@ -209,36 +190,80 @@ public class Squircle extends FrameLayout {
         void onBoth(boolean isOpened);
     }
 
-    public static class Holder extends LinearLayout {
+    public static class SquircleView extends FrameLayout {
 
-        private final double pad = 0.05;
-        private Squircle squircle;
+        private LinearLayout topLeft, topRight, bottomLeft, bottomRight;
 
-        public Holder(Context context, Squircle squircle) {
+        public SquircleView(Context context) {
             super(context);
-            this.squircle = squircle;
             init();
         }
 
         private void init() {
-            int padding = (int) (squircle.getMaxXY() * pad);
-            setOrientation(VERTICAL);
-            setGravity(Gravity.CENTER);
-            setLayoutParams(new LayoutParams(squircle.getMaxXY() + 2 * padding, squircle.getMaxXY() + 2 * padding));
-            setPadding(padding, padding, padding, padding);
-            addView(squircle);
+            // Init Views
+            topLeft = new LinearLayout(getContext());
+            topRight = new LinearLayout(getContext());
+            bottomLeft = new LinearLayout(getContext());
+            bottomRight = new LinearLayout(getContext());
+            // Set Orientation
+            topLeft.setOrientation(LinearLayout.VERTICAL);
+            topRight.setOrientation(LinearLayout.VERTICAL);
+            bottomLeft.setOrientation(LinearLayout.VERTICAL);
+            bottomRight.setOrientation(LinearLayout.VERTICAL);
+            // Set Gravity
+            topLeft.setGravity(Gravity.TOP | Gravity.START);
+            topRight.setGravity(Gravity.TOP | Gravity.END);
+            bottomLeft.setGravity(Gravity.BOTTOM | Gravity.START);
+            bottomRight.setGravity(Gravity.BOTTOM | Gravity.END);
+            // Set Size
+            LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            topLeft.setLayoutParams(parameters);
+            topRight.setLayoutParams(parameters);
+            bottomLeft.setLayoutParams(parameters);
+            bottomRight.setLayoutParams(parameters);
+            // Set Padding
+            setPadding(10, 10, 10, 10);
+            // Add To Layout
+            addView(topLeft);
+            addView(topRight);
+            addView(bottomLeft);
+            addView(bottomRight);
         }
 
-        public int getSidePad() {
-            return (int) (pad * squircle.getMaxXY());
+        public void setTopLeft(Squircle s) {
+            if (s == null) {
+                topLeft.removeAllViews();
+            } else {
+                topLeft.removeAllViews();
+                topLeft.addView(s);
+            }
         }
 
-        public void disableRight() {
-            setPadding(getPaddingLeft(), getPaddingTop(), 0, getPaddingBottom());
+        public void setTopRight(Squircle s) {
+            if (s == null) {
+                topRight.removeAllViews();
+            } else {
+                topRight.removeAllViews();
+                topRight.addView(s);
+            }
         }
 
-        public void disableLeft() {
-            setPadding(0, getPaddingTop(), getPaddingRight(), getPaddingBottom());
+        public void setBottomLeft(Squircle s) {
+            if (s == null) {
+                bottomLeft.removeAllViews();
+            } else {
+                bottomLeft.removeAllViews();
+                bottomLeft.addView(s);
+            }
+        }
+
+        public void setBottomRight(Squircle s) {
+            if (s == null) {
+                bottomRight.removeAllViews();
+            } else {
+                bottomRight.removeAllViews();
+                bottomRight.addView(s);
+            }
         }
     }
 }
