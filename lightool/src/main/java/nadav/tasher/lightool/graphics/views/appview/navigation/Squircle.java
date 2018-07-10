@@ -30,6 +30,7 @@ public class Squircle extends FrameLayout {
     private Tower<Integer> innerSize = new Tower<>();
     private Typeface typeface = null;
     private boolean isOpened = false;
+    private int radii=32;
     private LinearLayout inside;
 
     public Squircle(Context context, int size, int color) {
@@ -98,8 +99,12 @@ public class Squircle extends FrameLayout {
         addView(inside);
     }
 
+    public void setRadii(int rad){
+        radii=rad;
+        squircle();
+    }
+
     private void squircle() {
-        int radii = 32;
         float[] rad = new float[]{
                 radii,
                 radii,
@@ -142,7 +147,6 @@ public class Squircle extends FrameLayout {
 
     public void setColor(int color) {
         this.color = color;
-        this.color = Color.argb(128, Color.red(color), Color.green(color), Color.blue(color));
         squircle();
     }
 
