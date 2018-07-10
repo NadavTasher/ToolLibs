@@ -26,8 +26,8 @@ public class Squircle extends FrameLayout {
             color;
     private ArrayList<OnState> onstates = new ArrayList<>();
     private Peer<Integer> colorPeer = new Peer<>(), textSizePeer = new Peer<>(), textColorPeer = new Peer<>();
-    private Tower<Integer> innerColor=new Tower<>();
-    private Tower<Integer> innerSize=new Tower<>();
+    private Tower<Integer> innerColor = new Tower<>();
+    private Tower<Integer> innerSize = new Tower<>();
     private Typeface typeface = null;
     private boolean isOpened = false;
     private LinearLayout inside;
@@ -37,6 +37,14 @@ public class Squircle extends FrameLayout {
         this.maxXY = size;
         init();
         setColor(color);
+    }
+
+    public static TextView getTextView(Context c, String t, int size, final int textColor) {
+        final TextView v = new TextView(c);
+        v.setTextColor(textColor);
+        v.setTextSize(size);
+        v.setText(t);
+        return v;
     }
 
     private void init() {
@@ -150,11 +158,11 @@ public class Squircle extends FrameLayout {
         return textSizePeer;
     }
 
-    public void setDrawable(Drawable d,double sizePrecent) {
-        sizePrecent=Math.abs(sizePrecent);
+    public void setDrawable(Drawable d, double sizePrecent) {
+        sizePrecent = Math.abs(sizePrecent);
         inside.removeAllViews();
         ImageView iv = new ImageView(getContext());
-        iv.setLayoutParams(new LinearLayout.LayoutParams((int)(contentXY*sizePrecent), (int)(contentXY*sizePrecent)));
+        iv.setLayoutParams(new LinearLayout.LayoutParams((int) (contentXY * sizePrecent), (int) (contentXY * sizePrecent)));
         iv.setImageDrawable(d);
         inside.addView(iv);
     }
@@ -188,19 +196,11 @@ public class Squircle extends FrameLayout {
         innerSize.addPeer(new Peer<>(new Peer.OnPeer<Integer>() {
             @Override
             public boolean onPeer(Integer data) {
-                tv.setTextSize((int) tp.fontSizeRatio * data);
+                tv.setTextSize((int) (tp.fontSizeRatio * data));
                 return false;
             }
         }));
         return tv;
-    }
-
-    public static TextView getTextView(Context c,String t, int size,final int textColor) {
-        final TextView v = new TextView(c);
-        v.setTextColor(textColor);
-        v.setTextSize(size);
-        v.setText(t);
-        return v;
     }
 
     public void addOnState(OnState onState) {
@@ -223,14 +223,15 @@ public class Squircle extends FrameLayout {
         void onBoth(boolean isOpened);
     }
 
-    public static class TextPiece{
+    public static class TextPiece {
         private String text;
         private double fontSizeRatio;
         private int textColor;
-        public TextPiece(String text, double size, int color){
-            this.text=text;
-            this.fontSizeRatio=size;
-            this.textColor=color;
+
+        public TextPiece(String text, double size, int color) {
+            this.text = text;
+            this.fontSizeRatio = size;
+            this.textColor = color;
         }
     }
 

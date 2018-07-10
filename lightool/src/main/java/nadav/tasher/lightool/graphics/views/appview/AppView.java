@@ -21,24 +21,24 @@ public class AppView extends FrameLayout {
     private Window window;
     private Squircle.SquircleView squircleView;
     private Drawer drawer;
-    private Gradient backgroundColors=new Gradient(Color.WHITE);
+    private Gradient backgroundColors = new Gradient(Color.WHITE);
 
     public AppView(Context context, int drawerColor) {
         super(context);
         init(drawerColor);
     }
 
-    public AppView(Context context){
+    public AppView(Context context) {
         super(context);
         init(0x80333333);
     }
 
-    private void init(final int drawerColor){
+    private void init(final int drawerColor) {
         drawer = new Drawer(getContext(), drawerColor);
         drawer.addOnState(new Drawer.PersistantOnState() {
             @Override
             public void onOpen() {
-                setWindowColors(new Gradient(drawer.getStatusBarColor(backgroundColors.colorTop,drawerColor),backgroundColors.getColorBottom()));
+                setWindowColors(new Gradient(drawer.getStatusBarColor(backgroundColors.colorTop, drawerColor), backgroundColors.getColorBottom()));
             }
 
             @Override
@@ -54,7 +54,7 @@ public class AppView extends FrameLayout {
         scrollView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         content = new FrameLayout(getContext());
         scrolly = new LinearLayout(getContext());
-        squircleView=new Squircle.SquircleView(getContext());
+        squircleView = new Squircle.SquircleView(getContext());
         scrolly.setOrientation(LinearLayout.VERTICAL);
         scrolly.setGravity(Gravity.CENTER);
         scrollView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
@@ -85,29 +85,32 @@ public class AppView extends FrameLayout {
         return backgroundColors;
     }
 
-    @Override
-    public void setBackgroundColor(int color){
-        backgroundColors=new Gradient(color);
-        updateColors();
-    }
-
     public void setBackgroundColor(Gradient color) {
-        backgroundColors=color;
+        backgroundColors = color;
         updateColors();
     }
 
-    private void updateColors(){
-        setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{backgroundColors.getColorTop(),backgroundColors.getColorBottom()}));
-        if(window!=null)setWindowColors(backgroundColors);
+    @Override
+    public void setBackgroundColor(int color) {
+        backgroundColors = new Gradient(color);
+        updateColors();
     }
 
-    public void setWindow(Window w){
-        this.window=w;
+    private void updateColors() {
+        setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{
+                backgroundColors.getColorTop(),
+                backgroundColors.getColorBottom()
+        }));
+        if (window != null) setWindowColors(backgroundColors);
+    }
+
+    public void setWindow(Window w) {
+        this.window = w;
         setFlags();
         setWindowColors(backgroundColors);
     }
 
-    private void setFlags(){
+    private void setFlags() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -118,15 +121,17 @@ public class AppView extends FrameLayout {
         window.setStatusBarColor(g.colorTop);
     }
 
-    public static class Gradient{
-        private int colorTop,colorBottom;
-        public Gradient(int color){
-            colorTop=color;
-            colorBottom=color;
+    public static class Gradient {
+        private int colorTop, colorBottom;
+
+        public Gradient(int color) {
+            colorTop = color;
+            colorBottom = color;
         }
-        public Gradient(int colorTop,int colorBottom){
-            this.colorTop=colorTop;
-            this.colorBottom=colorBottom;
+
+        public Gradient(int colorTop, int colorBottom) {
+            this.colorTop = colorTop;
+            this.colorBottom = colorBottom;
         }
 
         public int getColorBottom() {

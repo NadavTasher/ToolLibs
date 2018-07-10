@@ -4,14 +4,11 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ public class Drawer extends LinearLayout {
     private View currentContent;
     private LinearLayout.LayoutParams navigationParms;
     private ArrayList<OnState> onstates = new ArrayList<>();
-    private int  backgroundColor;
+    private int backgroundColor;
     private boolean isOpen = false;
     private float completeZero;
 
@@ -40,7 +37,7 @@ public class Drawer extends LinearLayout {
     }
 
     private void init() {
-//        backgroundColor = Color.argb(128, Color.red(backgroundColor), Color.green(backgroundColor), Color.blue(backgroundColor));
+        //        backgroundColor = Color.argb(128, Color.red(backgroundColor), Color.green(backgroundColor), Color.blue(backgroundColor));
         final int y = Device.screenY(getContext());
         navigationParms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, y);
         upContent = new FrameLayout(getContext());
@@ -62,8 +59,8 @@ public class Drawer extends LinearLayout {
     }
 
     public void open(final boolean runAction, double precent) {
-        precent=Math.abs(precent);
-        ObjectAnimator oa = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getY(), -(int)(getHeight()*(1-precent)));
+        precent = Math.abs(precent);
+        ObjectAnimator oa = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getY(), -(int) (getHeight() * (1 - precent)));
         oa.setDuration(300);
         oa.setInterpolator(new LinearInterpolator());
         oa.addListener(new Animator.AnimatorListener() {
@@ -71,10 +68,12 @@ public class Drawer extends LinearLayout {
             public void onAnimationStart(Animator animation) {
                 if (!isOpen) {
                     for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null&&(runAction||onstates.get(a) instanceof PersistantOnState)) onstates.get(a).onOpen();
+                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
+                            onstates.get(a).onOpen();
                     }
                     for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null&&(runAction||onstates.get(a) instanceof PersistantOnState)) onstates.get(a).onBoth(isOpen);
+                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
+                            onstates.get(a).onBoth(isOpen);
                     }
                 }
                 isOpen = true;
@@ -102,17 +101,18 @@ public class Drawer extends LinearLayout {
         oa.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (isOpen) {
                     for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null&&(runAction||onstates.get(a) instanceof PersistantOnState)) onstates.get(a).onClose();
+                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
+                            onstates.get(a).onClose();
                     }
                     for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null&&(runAction||onstates.get(a) instanceof PersistantOnState)) onstates.get(a).onBoth(isOpen);
+                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
+                            onstates.get(a).onBoth(isOpen);
                     }
                 }
                 isOpen = false;
@@ -142,7 +142,6 @@ public class Drawer extends LinearLayout {
         upContent.removeAllViews();
         currentContent = v;
         upContent.addView(currentContent);
-
     }
 
     public void addOnState(OnState onState) {
@@ -155,18 +154,6 @@ public class Drawer extends LinearLayout {
 
     public void removeAllOnStates() {
         onstates.clear();
-    }
-
-    public interface OnState {
-        void onOpen();
-
-        void onClose();
-
-        void onBoth(boolean isOpened);
-    }
-
-    public interface PersistantOnState extends OnState{
-
     }
 
     public void emptyContent() {
@@ -185,5 +172,17 @@ public class Drawer extends LinearLayout {
         int combineRed = redA - (redA - redB) / 2, combineGreen = greenA - (greenA - greenB) / 2, combineBlue = blueA - (blueA - blueB) / 2;
         int combineAlpha = alphaA - (alphaA - alphaB) / 2;
         return Color.rgb(combineRed, combineGreen, combineBlue);
+    }
+
+    public interface OnState {
+        void onOpen();
+
+        void onClose();
+
+        void onBoth(boolean isOpened);
+    }
+
+    public interface PersistantOnState extends OnState {
+
     }
 }
