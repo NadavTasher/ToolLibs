@@ -17,14 +17,17 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import nadav.tasher.lightool.parts.Peer;
+import nadav.tasher.lightool.parts.Tower;
 
 public class Squircle extends FrameLayout {
-    private int imageXY,
+    private int
             contentXY,
             maxXY,
             color;
     private ArrayList<OnState> onstates = new ArrayList<>();
     private Peer<Integer> colorPeer = new Peer<>(), textSizePeer = new Peer<>(), textColorPeer = new Peer<>();
+    private Tower<Integer> innerColor=new Tower<>();
+    private Tower<Integer> innerSize=new Tower<>();
     private Typeface typeface = null;
     private boolean isOpened = false;
     private LinearLayout inside;
@@ -57,7 +60,6 @@ public class Squircle extends FrameLayout {
             }
         };
         contentXY = (int) (maxXY * 0.9);
-        imageXY = (int) (maxXY * 0.6);
         inside = new LinearLayout(getContext());
         inside.setOrientation(LinearLayout.VERTICAL);
         inside.setGravity(Gravity.CENTER);
@@ -69,6 +71,20 @@ public class Squircle extends FrameLayout {
             public boolean onPeer(Integer data) {
                 setColor(data);
                 return true;
+            }
+        });
+        textColorPeer.setOnPeer(new Peer.OnPeer<Integer>() {
+            @Override
+            public boolean onPeer(Integer data) {
+                innerColor.tell(data);
+                return false;
+            }
+        });
+        textSizePeer.setOnPeer(new Peer.OnPeer<Integer>() {
+            @Override
+            public boolean onPeer(Integer data) {
+                innerSize.tell(data);
+                return false;
             }
         });
         addView(inside);
@@ -108,7 +124,6 @@ public class Squircle extends FrameLayout {
     public void setMaxXY(int maxXY) {
         this.maxXY = maxXY;
         contentXY = (int) (maxXY * 0.9);
-        imageXY = (int) (maxXY * 0.6);
         inside.setLayoutParams(new LayoutParams(maxXY, maxXY));
         setLayoutParams(new LayoutParams(maxXY, maxXY));
     }
@@ -144,10 +159,10 @@ public class Squircle extends FrameLayout {
         inside.addView(iv);
     }
 
-    public void setText(TextView... texts) {
+    public void setText(TextPiece... texts) {
         inside.removeAllViews();
-        for (TextView tv : texts) {
-            inside.addView(resetView(tv, maxXY, texts.length));
+        for (TextPiece tv : texts) {
+            inside.addView(generateView(tv, maxXY, texts.length));
         }
     }
 
@@ -155,11 +170,28 @@ public class Squircle extends FrameLayout {
         isOpened = state;
     }
 
-    private TextView resetView(TextView tv, int maxSize, int tvs) {
+    private TextView generateView(final TextPiece tp, int maxSize, int tvs) {
+        final TextView tv = new TextView(getContext());
+        tv.setTextColor(tp.textColor);
+        tv.setText(tp.text);
         tv.setGravity(Gravity.CENTER);
         if (typeface != null)
             tv.setTypeface(typeface);
         tv.setLayoutParams(new LinearLayout.LayoutParams(maxSize, maxSize / tvs));
+        innerColor.addPeer(new Peer<>(new Peer.OnPeer<Integer>() {
+            @Override
+            public boolean onPeer(Integer data) {
+                tv.setTextColor(data);
+                return false;
+            }
+        }));
+        innerSize.addPeer(new Peer<>(new Peer.OnPeer<Integer>() {
+            @Override
+            public boolean onPeer(Integer data) {
+                tv.setTextSize((int) tp.fontSizeRatio * data);
+                return false;
+            }
+        }));
         return tv;
     }
 
@@ -189,6 +221,17 @@ public class Squircle extends FrameLayout {
         void onClose();
 
         void onBoth(boolean isOpened);
+    }
+
+    public static class TextPiece{
+        private String text;
+        private double fontSizeRatio;
+        private int textColor;
+        public TextPiece(String text, double size, int color){
+            this.text=text;
+            this.fontSizeRatio=size;
+            this.textColor=color;
+        }
     }
 
     public static class SquircleView extends FrameLayout {
