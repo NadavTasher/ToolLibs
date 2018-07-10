@@ -98,6 +98,7 @@ public class AppView extends FrameLayout {
 
     private void updateColors(){
         setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{backgroundColors.getColorTop(),backgroundColors.getColorBottom()}));
+        if(window!=null)setWindowColors(backgroundColors);
     }
 
     public void setWindow(Window w){
