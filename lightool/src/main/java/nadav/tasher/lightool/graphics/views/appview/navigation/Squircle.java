@@ -135,10 +135,11 @@ public class Squircle extends FrameLayout {
         return textSizePeer;
     }
 
-    public void setDrawable(Drawable d) {
+    public void setDrawable(Drawable d,double sizePrecent) {
+        sizePrecent=Math.abs(sizePrecent);
         inside.removeAllViews();
         ImageView iv = new ImageView(getContext());
-        iv.setLayoutParams(new LinearLayout.LayoutParams(imageXY, imageXY));
+        iv.setLayoutParams(new LinearLayout.LayoutParams((int)(contentXY*sizePrecent), (int)(contentXY*sizePrecent)));
         iv.setImageDrawable(d);
         inside.addView(iv);
     }
