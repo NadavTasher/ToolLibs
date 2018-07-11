@@ -21,6 +21,7 @@ public class AppView extends FrameLayout {
     private Window window;
     private FrameLayout navigationView;
     private Drawer drawer;
+    private boolean colorChangeNav=true,colorChangeStat=true;
     private Gradient backgroundColors = new Gradient(Color.WHITE);
 
     public AppView(Context context, int drawerColor) {
@@ -127,9 +128,17 @@ public class AppView extends FrameLayout {
 
     private void setWindowColors(Gradient g) {
         if(window!=null) {
-            window.setNavigationBarColor(g.colorBottom);
-            window.setStatusBarColor(g.colorTop);
+            if(colorChangeNav)window.setNavigationBarColor(g.colorBottom);
+            if(colorChangeStat)window.setStatusBarColor(g.colorTop);
         }
+    }
+
+    public void setColorChangeNavigation(boolean newVal){
+        this.colorChangeNav=newVal;
+    }
+
+    public void setColorChangeStatus(boolean newVal){
+        this.colorChangeStat=newVal;
     }
 
     public static class Gradient {
