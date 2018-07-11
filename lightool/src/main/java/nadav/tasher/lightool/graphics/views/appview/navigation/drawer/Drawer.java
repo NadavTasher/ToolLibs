@@ -1,4 +1,4 @@
-package nadav.tasher.lightool.graphics.views.appview.navigation;
+package nadav.tasher.lightool.graphics.views.appview.navigation.drawer;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;

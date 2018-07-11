@@ -12,14 +12,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import nadav.tasher.lightool.graphics.views.appview.navigation.Drawer;
-import nadav.tasher.lightool.graphics.views.appview.navigation.Squircle;
+import nadav.tasher.lightool.graphics.views.appview.navigation.drawer.Drawer;
+import nadav.tasher.lightool.graphics.views.appview.navigation.squircle.Squircle;
 
 public class AppView extends FrameLayout {
     private FrameLayout content;
     private LinearLayout scrolly;
     private Window window;
-    private Squircle.SquircleView squircleView;
+    private FrameLayout navigationView;
     private Drawer drawer;
     private Gradient backgroundColors = new Gradient(Color.WHITE);
 
@@ -53,8 +53,8 @@ public class AppView extends FrameLayout {
         ScrollView scrollView = new ScrollView(getContext());
         scrollView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         content = new FrameLayout(getContext());
+        navigationView=new FrameLayout(getContext());
         scrolly = new LinearLayout(getContext());
-        squircleView = new Squircle.SquircleView(getContext());
         scrolly.setOrientation(LinearLayout.VERTICAL);
         scrolly.setGravity(Gravity.CENTER);
         scrollView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
@@ -62,16 +62,21 @@ public class AppView extends FrameLayout {
         scrollView.addView(scrolly);
         scrolly.addView(content);
         addView(scrollView);
-        addView(squircleView);
+        addView(navigationView);
         addView(drawer);
+    }
+
+    public void setNavigationView(FrameLayout frameLayout){
+        navigationView.removeAllViews();
+        navigationView.addView(frameLayout);
+    }
+
+    public void removeNavigation(){
+        navigationView.removeAllViews();
     }
 
     public Drawer getDrawer() {
         return drawer;
-    }
-
-    public Squircle.SquircleView getSquircleView() {
-        return squircleView;
     }
 
     public void setContent(View v) {
@@ -106,19 +111,25 @@ public class AppView extends FrameLayout {
 
     public void setWindow(Window w) {
         this.window = w;
-        setFlags();
-        setWindowColors(backgroundColors);
+        if(window!=null) {
+            setFlags();
+            setWindowColors(backgroundColors);
+        }
     }
 
     private void setFlags() {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(window!=null) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
     }
 
     private void setWindowColors(Gradient g) {
-        window.setNavigationBarColor(g.colorBottom);
-        window.setStatusBarColor(g.colorTop);
+        if(window!=null) {
+            window.setNavigationBarColor(g.colorBottom);
+            window.setStatusBarColor(g.colorTop);
+        }
     }
 
     public static class Gradient {
