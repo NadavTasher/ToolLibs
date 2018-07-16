@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import nadav.tasher.lightool.graphics.views.appview.navigation.drawer.Drawer;
-import nadav.tasher.lightool.graphics.views.appview.navigation.squircle.Squircle;
 
 public class AppView extends FrameLayout {
     private FrameLayout content;
@@ -21,8 +20,10 @@ public class AppView extends FrameLayout {
     private Window window;
     private FrameLayout navigationView;
     private Drawer drawer;
-    private boolean colorChangeNav=true,colorChangeStat=true;
+    private Scrolly scrollView;
+    private boolean colorChangeNav = true, colorChangeStat = true;
     private Gradient backgroundColors = new Gradient(Color.WHITE);
+    private Drawer.PersistantOnState persistantOnState;
 
     public AppView(Context context, int drawerColor) {
         super(context);
@@ -36,7 +37,7 @@ public class AppView extends FrameLayout {
 
     private void init(final int drawerColor) {
         drawer = new Drawer(getContext(), drawerColor);
-        drawer.addOnState(new Drawer.PersistantOnState() {
+        persistantOnState = new Drawer.PersistantOnState() {
             @Override
             public void onOpen() {
                 setWindowColors(new Gradient(drawer.getStatusBarColor(backgroundColors.colorTop, drawerColor), backgroundColors.getColorBottom()));
@@ -50,16 +51,15 @@ public class AppView extends FrameLayout {
             @Override
             public void onBoth(boolean isOpened) {
             }
-        });
-        ScrollView scrollView = new ScrollView(getContext());
+        };
+        drawer.addOnState(persistantOnState);
+        scrollView = new Scrolly(getContext());
         scrollView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         content = new FrameLayout(getContext());
-        navigationView=new FrameLayout(getContext());
+        navigationView = new FrameLayout(getContext());
         scrolly = new LinearLayout(getContext());
         scrolly.setOrientation(LinearLayout.VERTICAL);
         scrolly.setGravity(Gravity.CENTER);
-        scrollView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
-        scrollView.setVerticalScrollBarEnabled(false);
         scrollView.addView(scrolly);
         scrolly.addView(content);
         addView(scrollView);
@@ -67,12 +67,12 @@ public class AppView extends FrameLayout {
         addView(drawer);
     }
 
-    public void setNavigationView(FrameLayout frameLayout){
+    public void setNavigationView(FrameLayout frameLayout) {
         navigationView.removeAllViews();
         navigationView.addView(frameLayout);
     }
 
-    public void removeNavigation(){
+    public void removeNavigation() {
         navigationView.removeAllViews();
     }
 
@@ -85,6 +85,10 @@ public class AppView extends FrameLayout {
             content.removeAllViews();
             content.addView(v);
         }
+    }
+
+    public Scrolly getScrolly() {
+        return scrollView;
     }
 
     public Gradient getBackgroundColor() {
@@ -107,19 +111,25 @@ public class AppView extends FrameLayout {
                 backgroundColors.getColorTop(),
                 backgroundColors.getColorBottom()
         }));
-        if (window != null) setWindowColors(backgroundColors);
+        if (window != null) {
+            if(!drawer.isOpen()) {
+                setWindowColors(backgroundColors);
+            }else{
+                persistantOnState.onOpen();
+            }
+        }
     }
 
     public void setWindow(Window w) {
         this.window = w;
-        if(window!=null) {
+        if (window != null) {
             setFlags();
             setWindowColors(backgroundColors);
         }
     }
 
     private void setFlags() {
-        if(window!=null) {
+        if (window != null) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -127,18 +137,18 @@ public class AppView extends FrameLayout {
     }
 
     private void setWindowColors(Gradient g) {
-        if(window!=null) {
-            if(colorChangeNav)window.setNavigationBarColor(g.colorBottom);
-            if(colorChangeStat)window.setStatusBarColor(g.colorTop);
+        if (window != null) {
+            if (colorChangeNav) window.setNavigationBarColor(g.colorBottom);
+            if (colorChangeStat) window.setStatusBarColor(g.colorTop);
         }
     }
 
-    public void setColorChangeNavigation(boolean newVal){
-        this.colorChangeNav=newVal;
+    public void setColorChangeNavigation(boolean newVal) {
+        this.colorChangeNav = newVal;
     }
 
-    public void setColorChangeStatus(boolean newVal){
-        this.colorChangeStat=newVal;
+    public void setColorChangeStatus(boolean newVal) {
+        this.colorChangeStat = newVal;
     }
 
     public static class Gradient {
@@ -160,6 +170,33 @@ public class AppView extends FrameLayout {
 
         public int getColorTop() {
             return colorTop;
+        }
+    }
+
+    public static class Scrolly extends ScrollView {
+
+        private OnScroll list;
+
+        public Scrolly(Context context) {
+            super(context);
+            setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+            setVerticalScrollBarEnabled(false);
+        }
+
+        public void setOnScroll(OnScroll os) {
+            list = os;
+        }
+
+        @Override
+        protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+            if (list != null) {
+                list.onScroll(l, t, oldl, oldt);
+            }
+            super.onScrollChanged(l, t, oldl, oldt);
+        }
+
+        public interface OnScroll {
+            void onScroll(int l, int t, int ol, int ot);
         }
     }
 }

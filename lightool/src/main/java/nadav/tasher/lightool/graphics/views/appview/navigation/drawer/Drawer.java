@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import nadav.tasher.lightool.info.Device;
 
 public class Drawer extends LinearLayout {
+    private boolean isAnimating=false;
     private FrameLayout upContent;
     private View currentContent;
     private LinearLayout.LayoutParams navigationParms;
@@ -41,9 +42,9 @@ public class Drawer extends LinearLayout {
         final int y = Device.screenY(getContext());
         navigationParms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, y);
         upContent = new FrameLayout(getContext());
-        upContent.setPadding(20, 20, 20, 20);
+        upContent.setPadding(0, 0, 0, 0);
         upContent.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, y));
-        setPadding(20, 0, 20, 0);
+        setPadding(0, 0, 0, 0);
         setOrientation(LinearLayout.VERTICAL);
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         setLayoutParams(navigationParms);
@@ -63,9 +64,12 @@ public class Drawer extends LinearLayout {
         ObjectAnimator oa = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getY(), -(int) (getHeight() * (1 - precent)));
         oa.setDuration(300);
         oa.setInterpolator(new LinearInterpolator());
+        final double finalPrecent = precent;
         oa.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+                isAnimating=true;
+                upContent.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)(Device.screenY(getContext())* finalPrecent)));
                 if (!isOpen) {
                     for (int a = 0; a < onstates.size(); a++) {
                         if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
@@ -81,6 +85,7 @@ public class Drawer extends LinearLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                isAnimating=false;
             }
 
             @Override
@@ -91,6 +96,7 @@ public class Drawer extends LinearLayout {
             public void onAnimationRepeat(Animator animation) {
             }
         });
+        if(!isAnimating)
         oa.start();
     }
 
@@ -101,6 +107,7 @@ public class Drawer extends LinearLayout {
         oa.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+                isAnimating=true;
             }
 
             @Override
@@ -116,6 +123,7 @@ public class Drawer extends LinearLayout {
                     }
                 }
                 isOpen = false;
+                isAnimating=false;
             }
 
             @Override
@@ -126,6 +134,7 @@ public class Drawer extends LinearLayout {
             public void onAnimationRepeat(Animator animation) {
             }
         });
+        if(!isAnimating)
         oa.start();
     }
 

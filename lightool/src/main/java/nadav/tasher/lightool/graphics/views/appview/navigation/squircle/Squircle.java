@@ -170,10 +170,10 @@ public class Squircle extends FrameLayout {
         inside.addView(iv);
     }
 
-    public void setText(TextPiece... texts) {
+    public void setText(double sizePrecent,TextPiece... texts) {
         inside.removeAllViews();
         for (TextPiece tv : texts) {
-            inside.addView(generateView(tv, maxXY, texts.length));
+            inside.addView(generateView(tv, (int)(contentXY * sizePrecent), texts.length));
         }
     }
 
