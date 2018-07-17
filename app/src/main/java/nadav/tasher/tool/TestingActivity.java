@@ -7,7 +7,13 @@ package nadav.tasher.tool;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import nadav.tasher.lightool.graphics.views.ExpandingView;
+import nadav.tasher.lightool.graphics.views.Utils;
 import nadav.tasher.lightool.graphics.views.appview.AppView;
 import nadav.tasher.lightool.graphics.views.appview.navigation.corner.Corner;
 import nadav.tasher.lightool.graphics.views.appview.navigation.corner.CornerView;
@@ -41,6 +47,17 @@ public class TestingActivity extends Activity {
         cornNav.setTopRight(c);
         view.setNavigationView(cornNav);
         view.setBackgroundColor(Color.GREEN);
+        TextView myTextA=new TextView(getApplicationContext());
+        myTextA.setText("This Is A Text.");
+        TextView myTextB=new TextView(getApplicationContext());
+        myTextA.setGravity(Gravity.CENTER);
+        myTextB.setGravity(Gravity.CENTER);
+        myTextB.setText("This Is Another Text.");
+//        myTextB.setPadding(0,30,0,30);
+        myTextB.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,Device.screenY(getApplicationContext())/13));
+        ExpandingView ev=new ExpandingView(getApplicationContext(),500,Device.screenY(getApplicationContext())/13,myTextA,myTextB);
+        ev.setBackground(Utils.getCoaster(Color.WHITE,32,10));
+        view.setContent(ev);
         setContentView(view);
     }
 }
