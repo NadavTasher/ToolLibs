@@ -3,6 +3,7 @@ package nadav.tasher.lightool.graphics.views;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,16 @@ public class ExpandingView extends LinearLayout {
 
     public ExpandingView(Context c, int duration, int minimalSize, View topView, View bottomView) {
         super(c);
+        this.topView = topView;
+        this.bottomView = bottomView;
+        this.duration = duration;
+        this.minimalSize = minimalSize;
+        init();
+    }
+
+    public ExpandingView(Context c, Drawable back, int duration, int minimalSize, View topView, View bottomView) {
+        super(c);
+        this.setBackground(back);
         this.topView = topView;
         this.bottomView = bottomView;
         this.duration = duration;
