@@ -52,7 +52,7 @@ public class ExpandingView extends LinearLayout {
             }
         });
         topView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, minimalSize));
-        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, minimalSize + getVerticalPadding() / 2));
+        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, minimalSize + getVerticalPadding()));
         addView(topView);
         addView(bottomView);
     }
