@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import nadav.tasher.lightool.graphics.views.ColorPicker;
 import nadav.tasher.lightool.graphics.views.ExpandingView;
 import nadav.tasher.lightool.graphics.views.Utils;
 import nadav.tasher.lightool.graphics.views.appview.AppView;
@@ -57,7 +58,9 @@ public class TestingActivity extends Activity {
         myTextB.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,Device.screenY(getApplicationContext())/13));
         ExpandingView ev=new ExpandingView(getApplicationContext(),500,Device.screenY(getApplicationContext())/13,myTextA,myTextB);
         ev.setBackground(Utils.getCoaster(Color.WHITE,32,10));
-        view.setContent(ev);
+        ColorPicker colorPicker=new ColorPicker(getApplicationContext());
+        colorPicker.setLayoutParams(new LinearLayout.LayoutParams((int) (Device.screenX(getApplicationContext())*0.9),Device.screenY(getApplicationContext())/12));
+        view.setContent(colorPicker);
         setContentView(view);
     }
 }
