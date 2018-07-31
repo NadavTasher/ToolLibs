@@ -1,94 +1,68 @@
 package nadav.tasher.lightool.graphics.views.appview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import nadav.tasher.lightool.graphics.views.appview.navigation.corner.CornerView;
 import nadav.tasher.lightool.graphics.views.appview.navigation.drawer.Drawer;
 
 public class AppView extends FrameLayout {
-    private FrameLayout content;
-    private LinearLayout scrolly;
+    public static final int ORDER_NAVIGATION_ON_TOP = 0;
+    public static final int ORDER_NAVIGATION_ON_BOTTOM = 1;
     private Window window;
-    private FrameLayout navigationView;
     private Drawer drawer;
-    private Scrolly scrollView;
-    private boolean colorChangeNav = true, colorChangeStat = true;
+    private CornerView cornerView;
+    private Scrolly scroll;
+    private int order = ORDER_NAVIGATION_ON_TOP;
+    private boolean drawNavigation = true, drawStatusbar = true;
     private Gradient backgroundColors = new Gradient(Color.WHITE);
-    private Drawer.PersistantOnState persistantOnState;
 
-    public AppView(Context context, int drawerColor) {
-        super(context);
-        init(drawerColor);
+    public AppView(Activity activity) {
+        super(activity);
+        setWindow(activity.getWindow());
+        init();
     }
 
-    public AppView(Context context) {
-        super(context);
-        init(0x80333333);
+    private void init() {
+        drawer = new Drawer(getContext());
+        scroll = new Scrolly(getContext());
+        cornerView = new CornerView(getContext());
+        initOrder();
     }
 
-    private void init(final int drawerColor) {
-        drawer = new Drawer(getContext(), drawerColor);
-        persistantOnState = new Drawer.PersistantOnState() {
-            @Override
-            public void onOpen() {
-                setWindowColors(new Gradient(drawer.getStatusBarColor(backgroundColors.colorTop, drawerColor), backgroundColors.getColorBottom()));
-            }
-
-            @Override
-            public void onClose() {
-                setWindowColors(backgroundColors);
-            }
-
-            @Override
-            public void onBoth(boolean isOpened) {
-            }
-        };
-        drawer.addOnState(persistantOnState);
-        scrollView = new Scrolly(getContext());
-        scrollView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        content = new FrameLayout(getContext());
-        navigationView = new FrameLayout(getContext());
-        scrolly = new LinearLayout(getContext());
-        scrolly.setOrientation(LinearLayout.VERTICAL);
-        scrolly.setGravity(Gravity.CENTER);
-        scrollView.addView(scrolly);
-        scrolly.addView(content);
-        addView(scrollView);
-        addView(navigationView);
-        addView(drawer);
+    public void setOrder(int order) {
+        this.order = order;
+        initOrder();
     }
 
-    public void setNavigationView(FrameLayout frameLayout) {
-        navigationView.removeAllViews();
-        navigationView.addView(frameLayout);
-    }
-
-    public void removeNavigation() {
-        navigationView.removeAllViews();
+    private void initOrder() {
+        addView(scroll);
+        if (order == ORDER_NAVIGATION_ON_TOP) {
+            addView(drawer);
+            addView(cornerView);
+        } else {
+            addView(cornerView);
+            addView(drawer);
+        }
     }
 
     public Drawer getDrawer() {
         return drawer;
     }
 
-    public void setContent(View v) {
-        if (content != null) {
-            content.removeAllViews();
-            content.addView(v);
-        }
+    public Scrolly getScrolly() {
+        return scroll;
     }
 
-    public Scrolly getScrolly() {
-        return scrollView;
+    public CornerView getCornerView() {
+        return cornerView;
     }
 
     public Gradient getBackgroundColor() {
@@ -112,17 +86,13 @@ public class AppView extends FrameLayout {
                 backgroundColors.getColorBottom()
         }));
         if (window != null) {
-            if(!drawer.isOpen()) {
-                setWindowColors(backgroundColors);
-            }else{
-                persistantOnState.onOpen();
-            }
+            setWindowColors(backgroundColors);
         }
     }
 
-    public void setWindow(Window w) {
-        this.window = w;
-        if (window != null) {
+    private void setWindow(Window window) {
+        this.window = window;
+        if (this.window != null) {
             setFlags();
             setWindowColors(backgroundColors);
         }
@@ -138,17 +108,17 @@ public class AppView extends FrameLayout {
 
     private void setWindowColors(Gradient g) {
         if (window != null) {
-            if (colorChangeNav) window.setNavigationBarColor(g.colorBottom);
-            if (colorChangeStat) window.setStatusBarColor(g.colorTop);
+            if (drawNavigation) window.setNavigationBarColor(g.colorBottom);
+            if (drawStatusbar) window.setStatusBarColor(g.colorTop);
         }
     }
 
-    public void setColorChangeNavigation(boolean newVal) {
-        this.colorChangeNav = newVal;
+    public void setDrawStatusbar(boolean drawStatusbar) {
+        this.drawStatusbar = drawStatusbar;
     }
 
-    public void setColorChangeStatus(boolean newVal) {
-        this.colorChangeStat = newVal;
+    public void setDrawNavigation(boolean drawNavigation) {
+        this.drawNavigation = drawNavigation;
     }
 
     public static class Gradient {
@@ -181,6 +151,16 @@ public class AppView extends FrameLayout {
             super(context);
             setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
             setVerticalScrollBarEnabled(false);
+        }
+
+        public void setView(View v) {
+            super.removeAllViews();
+            super.addView(v);
+        }
+
+        @Deprecated
+        @Override
+        public void addView(View view) {
         }
 
         public void setOnScroll(OnScroll os) {

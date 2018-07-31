@@ -16,141 +16,133 @@ import java.util.ArrayList;
 import nadav.tasher.lightool.info.Device;
 
 public class Drawer extends LinearLayout {
-    private boolean isAnimating=false;
-    private FrameLayout upContent;
-    private View currentContent;
-    private LinearLayout.LayoutParams navigationParms;
+    private ObjectAnimator animation;
+    private FrameLayout drawerView;
+    private View closer;
     private ArrayList<OnState> onstates = new ArrayList<>();
-    private int backgroundColor;
-    private boolean isOpen = false;
-    private float completeZero;
 
     public Drawer(Context context) {
         super(context);
-        backgroundColor = Color.BLACK;
-        init();
-    }
-
-    public Drawer(Context context, int backgroundColor) {
-        super(context);
-        this.backgroundColor = backgroundColor;
         init();
     }
 
     private void init() {
-        //        backgroundColor = Color.argb(128, Color.red(backgroundColor), Color.green(backgroundColor), Color.blue(backgroundColor));
-        final int y = Device.screenY(getContext());
-        navigationParms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, y);
-        upContent = new FrameLayout(getContext());
-        upContent.setPadding(0, 0, 0, 0);
-        upContent.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, y));
-        setPadding(0, 0, 0, 0);
+        // Log.i("DrawerInfo","Current Height: "+drawer.getLayoutParams().height+" Current Y: "+getY()+" IsOpened: "+isOpen());
+        drawerView = new FrameLayout(getContext());
+        drawerView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
+        closer = new View(getContext());
+        closer.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        closer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOpen()) close();
+            }
+        });
+        closer.setVisibility(View.GONE);
         setOrientation(LinearLayout.VERTICAL);
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-        setLayoutParams(navigationParms);
-        setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-        setBackgroundColor(backgroundColor);
-        addView(upContent);
-        completeZero = -y;
-        setY(completeZero);
+        setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setGravity(Gravity.CENTER);
+        addView(drawerView);
+        addView(closer);
+    }
+
+    public void open(double percent) {
+        if (!isAnimating()) {
+            percent = Math.abs(percent);
+            closer.setVisibility(View.VISIBLE);
+            drawerView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Device.screenY(getContext()) * percent)));
+            animation = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, -drawerView.getLayoutParams().height, 0);
+            animation.setDuration(300);
+            animation.setInterpolator(new LinearInterpolator());
+            animation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    if (isOpen()) {
+                        for (int a = 0; a < onstates.size(); a++) {
+                            onstates.get(a).onOpen();
+                        }
+                        for (int a = 0; a < onstates.size(); a++) {
+                            onstates.get(a).onBoth(isOpen());
+                        }
+                    }
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+            animation.start();
+        }
+    }
+
+    public void close() {
+        if (!isAnimating()) {
+            closer.setVisibility(View.GONE);
+            animation = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, 0, -drawerView.getLayoutParams().height);
+            animation.setDuration(300);
+            animation.setInterpolator(new LinearInterpolator());
+            animation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    drawerView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
+                    if (!isOpen()) {
+                        for (int a = 0; a < onstates.size(); a++) {
+                            onstates.get(a).onClose();
+                        }
+                        for (int a = 0; a < onstates.size(); a++) {
+                            onstates.get(a).onBoth(isOpen());
+                        }
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+            animation.start();
+        }
+    }
+
+    public boolean isAnimating() {
+        return animation != null && animation.isRunning();
     }
 
     public boolean isOpen() {
-        return isOpen;
+        return drawerView.getLayoutParams() != null && drawerView.getLayoutParams().height != 0;
     }
 
-    public void open(final boolean runAction, double precent) {
-        precent = Math.abs(precent);
-        ObjectAnimator oa = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getY(), -(int) (getHeight() * (1 - precent)));
-        oa.setDuration(300);
-        oa.setInterpolator(new LinearInterpolator());
-        final double finalPrecent = precent;
-        oa.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isAnimating=true;
-                upContent.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)(Device.screenY(getContext())* finalPrecent)));
-                if (!isOpen) {
-                    for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
-                            onstates.get(a).onOpen();
-                    }
-                    for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
-                            onstates.get(a).onBoth(isOpen);
-                    }
-                }
-                isOpen = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isAnimating=false;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        if(!isAnimating)
-        oa.start();
-    }
-
-    public void close(final boolean runAction) {
-        ObjectAnimator oa = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getY(), completeZero);
-        oa.setDuration(300);
-        oa.setInterpolator(new LinearInterpolator());
-        oa.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isAnimating=true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (isOpen) {
-                    for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
-                            onstates.get(a).onClose();
-                    }
-                    for (int a = 0; a < onstates.size(); a++) {
-                        if (onstates.get(a) != null && (runAction || onstates.get(a) instanceof PersistantOnState))
-                            onstates.get(a).onBoth(isOpen);
-                    }
-                }
-                isOpen = false;
-                isAnimating=false;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        if(!isAnimating)
-        oa.start();
-    }
-
-    public void setColor(int color) {
-        this.backgroundColor = color;
-        setBackgroundColor(backgroundColor);
+    public FrameLayout getDrawerView() {
+        return drawerView;
     }
 
     public View getContent() {
-        return currentContent;
+        if (drawerView.getChildCount() > 0) {
+            return drawerView.getChildAt(0);
+        } else {
+            return null;
+        }
     }
 
     public void setContent(View v) {
-        upContent.removeAllViews();
-        currentContent = v;
-        upContent.addView(currentContent);
+        drawerView.removeAllViews();
+        drawerView.addView(v);
     }
 
     public void addOnState(OnState onState) {
@@ -166,7 +158,7 @@ public class Drawer extends LinearLayout {
     }
 
     public void emptyContent() {
-        upContent.removeAllViews();
+        drawerView.removeAllViews();
     }
 
     public int getStatusBarColor(int colorA, int colorB) {
@@ -176,10 +168,7 @@ public class Drawer extends LinearLayout {
         int redB = Color.red(colorB);
         int greenB = Color.green(colorB);
         int blueB = Color.blue(colorB);
-        int alphaA = Color.alpha(colorA);
-        int alphaB = Color.alpha(colorB);
         int combineRed = redA - (redA - redB) / 2, combineGreen = greenA - (greenA - greenB) / 2, combineBlue = blueA - (blueA - blueB) / 2;
-        int combineAlpha = alphaA - (alphaA - alphaB) / 2;
         return Color.rgb(combineRed, combineGreen, combineBlue);
     }
 
@@ -189,9 +178,5 @@ public class Drawer extends LinearLayout {
         void onClose();
 
         void onBoth(boolean isOpened);
-    }
-
-    public interface PersistantOnState extends OnState {
-
     }
 }

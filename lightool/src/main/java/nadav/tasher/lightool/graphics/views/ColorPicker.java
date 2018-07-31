@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
+import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 public class ColorPicker extends SeekBar {
@@ -32,36 +32,10 @@ public class ColorPicker extends SeekBar {
         setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int r = 0;
-                int g = 0;
-                int b = 0;
-                if (progress < 256) {
-                    b = progress;
-                } else if (progress < 256 * 2) {
-                    g = progress % 256;
-                    b = 256 - progress % 256;
-                } else if (progress < 256 * 3) {
-                    g = 255;
-                    b = progress % 256;
-                } else if (progress < 256 * 4) {
-                    r = progress % 256;
-                    g = 256 - progress % 256;
-                    b = 256 - progress % 256;
-                } else if (progress < 256 * 5) {
-                    r = 255;
-                    g = 0;
-                    b = progress % 256;
-                } else if (progress < 256 * 6) {
-                    r = 255;
-                    g = progress % 256;
-                    b = 256 - progress % 256;
-                } else if (progress < 256 * 7) {
-                    r = 255;
-                    g = 255;
-                    b = progress % 256;
-                }
-                currentColor = Color.rgb(r, g, b);
+                Log.i("Progress",String.valueOf(progress));
+                currentColor = getColorFromProgress(progress);
                 drawThumb();
+                if (onColor != null) onColor.onColorChange(currentColor);
             }
 
             @Override
@@ -75,13 +49,76 @@ public class ColorPicker extends SeekBar {
         drawThumb();
     }
 
-    private void drawThumb(){
-        int size=0;
-        if(getLayoutParams()!=null) {
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        super.setLayoutParams(params);
+        drawThumb();
+    }
+
+    private void drawThumb() {
+        int size = 0;
+        if (getLayoutParams() != null) {
             size = getLayoutParams().height - getPaddingTop() - getPaddingBottom();
         }
-        LayerDrawable layerDrawable=new LayerDrawable(new Drawable[]{Utils.getCoaster(Color.WHITE,16,10,size/2,size),Utils.getCoaster(currentColor,16,10,(int)(size/2.25),(int)(size/1.25))});
+        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{
+                Utils.getCoaster(Color.WHITE, 16, 10, size / 2, size),
+                Utils.getCoaster(currentColor, 16, 10, (int) (size / 2.25), (int) (size / 1.25))
+        });
         setThumb(layerDrawable);
+    }
+
+    public int getColor() {
+        return currentColor;
+    }
+
+    public void setColor(int color) {
+        setProgress(getProgressFromColor(color));
+        drawThumb();
+    }
+
+    public void setOnColor(OnColorChanged onColor) {
+        this.onColor = onColor;
+    }
+
+    private int getProgressFromColor(int color) {
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
+        int progress = 0;
+        // Generate the progress int accordingly to the 'color' int.
+        return progress;
+    }
+
+    private int getColorFromProgress(int progress) {
+        int r = 0;
+        int g = 0;
+        int b = 0;
+        if (progress < 256) {
+            b = progress;
+        } else if (progress < 256 * 2) {
+            g = progress % 256;
+            b = 256 - progress % 256;
+        } else if (progress < 256 * 3) {
+            g = 255;
+            b = progress % 256;
+        } else if (progress < 256 * 4) {
+            r = progress % 256;
+            g = 256 - progress % 256;
+            b = 256 - progress % 256;
+        } else if (progress < 256 * 5) {
+            r = 255;
+            g = 0;
+            b = progress % 256;
+        } else if (progress < 256 * 6) {
+            r = 255;
+            g = progress % 256;
+            b = 256 - progress % 256;
+        } else if (progress < 256 * 7) {
+            r = 255;
+            g = 255;
+            b = progress % 256;
+        }
+        return Color.rgb(r, g, b);
     }
 
     public interface OnColorChanged {
