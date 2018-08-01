@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 public class ColorPicker extends SeekBar {
-    private int defaultColor = 0xFFFFFFFF, currentColor = defaultColor;
+    private int currentColor = Color.WHITE;
     private OnColorChanged onColor = null;
 
     public ColorPicker(Context context) {
@@ -32,7 +32,7 @@ public class ColorPicker extends SeekBar {
         setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i("Progress",String.valueOf(progress));
+                Log.i("Progress", String.valueOf(progress));
                 currentColor = getColorFromProgress(progress);
                 drawThumb();
                 if (onColor != null) onColor.onColorChange(currentColor);
@@ -81,11 +81,10 @@ public class ColorPicker extends SeekBar {
     }
 
     private int getProgressFromColor(int color) {
-        int r = Color.red(color);
-        int g = Color.green(color);
-        int b = Color.blue(color);
         int progress = 0;
-        // Generate the progress int accordingly to the 'color' int.
+        for (int i = 0; i <= getMax(); i++) {
+            if (getColorFromProgress(i) == color) progress = i;
+        }
         return progress;
     }
 

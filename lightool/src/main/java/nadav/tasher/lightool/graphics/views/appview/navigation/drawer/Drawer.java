@@ -17,6 +17,7 @@ import nadav.tasher.lightool.info.Device;
 
 public class Drawer extends LinearLayout {
     private ObjectAnimator animation;
+    private int animationTime = 400;
     private FrameLayout drawerView;
     private View closer;
     private ArrayList<OnState> onstates = new ArrayList<>();
@@ -39,6 +40,7 @@ public class Drawer extends LinearLayout {
             }
         });
         closer.setVisibility(View.GONE);
+        closer.setSoundEffectsEnabled(false);
         setOrientation(LinearLayout.VERTICAL);
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -47,13 +49,17 @@ public class Drawer extends LinearLayout {
         addView(closer);
     }
 
+    public void setAnimationTime(int animationTime) {
+        this.animationTime = animationTime;
+    }
+
     public void open(double percent) {
         if (!isAnimating()) {
             percent = Math.abs(percent);
             closer.setVisibility(View.VISIBLE);
             drawerView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (Device.screenY(getContext()) * percent)));
-            animation = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, -drawerView.getLayoutParams().height, 0);
-            animation.setDuration(300);
+            animation = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getAnimation(true));
+            animation.setDuration(animationTime);
             animation.setInterpolator(new LinearInterpolator());
             animation.addListener(new Animator.AnimatorListener() {
                 @Override
@@ -84,11 +90,27 @@ public class Drawer extends LinearLayout {
         }
     }
 
+    private float[] getAnimation(boolean open) {
+        float[] animation;
+        if (open) {
+            animation = new float[]{
+                    -drawerView.getLayoutParams().height,
+                    0
+            };
+        } else {
+            animation = new float[]{
+                    0,
+                    -drawerView.getLayoutParams().height
+            };
+        }
+        return animation;
+    }
+
     public void close() {
         if (!isAnimating()) {
             closer.setVisibility(View.GONE);
-            animation = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, 0, -drawerView.getLayoutParams().height);
-            animation.setDuration(300);
+            animation = ObjectAnimator.ofFloat(Drawer.this, View.TRANSLATION_Y, getAnimation(false));
+            animation.setDuration(animationTime);
             animation.setInterpolator(new LinearInterpolator());
             animation.addListener(new Animator.AnimatorListener() {
                 @Override
@@ -159,17 +181,6 @@ public class Drawer extends LinearLayout {
 
     public void emptyContent() {
         drawerView.removeAllViews();
-    }
-
-    public int getStatusBarColor(int colorA, int colorB) {
-        int redA = Color.red(colorA);
-        int greenA = Color.green(colorA);
-        int blueA = Color.blue(colorA);
-        int redB = Color.red(colorB);
-        int greenB = Color.green(colorB);
-        int blueB = Color.blue(colorB);
-        int combineRed = redA - (redA - redB) / 2, combineGreen = greenA - (greenA - greenB) / 2, combineBlue = blueA - (blueA - blueB) / 2;
-        return Color.rgb(combineRed, combineGreen, combineBlue);
     }
 
     public interface OnState {

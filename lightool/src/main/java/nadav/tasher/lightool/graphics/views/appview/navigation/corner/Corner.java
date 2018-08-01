@@ -2,20 +2,15 @@ package nadav.tasher.lightool.graphics.views.appview.navigation.corner;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Corner extends FrameLayout {
+public class Corner extends LinearLayout {
 
     public static final int TOP_LEFT = 0;
     public static final int TOP_RIGHT = 1;
@@ -23,29 +18,25 @@ public class Corner extends FrameLayout {
     public static final int BOTTOM_RIGHT = 3;
 
     private int
-            size,
-            color,
+            size = 256,
+            color=Color.WHITE,
+            radii = size,
+            alpha = 128,
             location = TOP_LEFT;
-
-    private ArrayList<TextView> views=new ArrayList<>();
 
     private ArrayList<OnState> onstates = new ArrayList<>();
     private boolean isOpened = false;
-    private int radii = 256;
-    private int alpha = 128;
-    private LinearLayout inside;
 
     public Corner(Context context, int size, int color) {
         super(context);
         this.size = size;
+        this.color=color;
         init();
-        setRadii(size);
-        setColor(color);
     }
 
     private void init() {
-        removeAllViews();
-        OnClickListener onClickListener = new OnClickListener() {
+        super.removeAllViews();
+        setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 isOpened = !isOpened;
@@ -62,23 +53,37 @@ public class Corner extends FrameLayout {
                     if (onstates.get(a) != null) onstates.get(a).onBoth(isOpened);
                 }
             }
-        };
-        inside = new LinearLayout(getContext());
-        inside.setOrientation(LinearLayout.VERTICAL);
-        inside.setGravity(Gravity.CENTER);
-
-        setOnClickListener(onClickListener);
-        addView(inside);
+        });
+        initSize();
+        setColor(color);
     }
 
-    private void initSize(){
-        inside.setLayoutParams(new LayoutParams(size, size));
+    private void initSize() {
         setLayoutParams(new LayoutParams(size, size));
+        setRadii(size);
     }
 
-    public void setRadii(int rad) {
+    private void setRadii(int rad) {
         radii = rad;
         corner();
+    }
+
+    public void setView(View v, double percent) {
+        super.removeAllViews();
+        if (v != null) {
+            v.setLayoutParams(new LinearLayout.LayoutParams((int) (size * percent), (int) (size * percent)));
+            super.addView(v);
+        }
+    }
+
+    @Override
+    @Deprecated
+    public void addView(View v) {
+    }
+
+    @Override
+    @Deprecated
+    public void removeAllViews() {
     }
 
     public void setColorAlpha(int a) {
@@ -109,9 +114,9 @@ public class Corner extends FrameLayout {
         return 0;
     }
 
-public int getSize(){
+    public int getSize() {
         return size;
-}
+    }
 
     public void setSize(int size) {
         this.size = size;
@@ -126,33 +131,6 @@ public int getSize(){
         this.color = color;
         this.color = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
         corner();
-    }
-
-    public void setDrawable(Drawable d, double percent) {
-        int maxSize =(int)(((double) size)*percent);
-        inside.removeAllViews();
-        ImageView iv = new ImageView(getContext());
-        iv.setLayoutParams(new LinearLayout.LayoutParams(maxSize, maxSize));
-        iv.setImageDrawable(d);
-        inside.addView(iv);
-    }
-
-    public void addText(String text, int textColor, int textSize, Typeface typeface){
-        views.add(generateView(text,textColor,textSize,typeface));
-    }
-
-    public void removeAllTexts(){
-        views.clear();
-        inside.removeAllViews();
-    }
-
-    public void renderText(double percent) {
-        int maxSize =(int)(((double) size)*percent);
-        inside.removeAllViews();
-        for(TextView tv:views){
-            tv.setLayoutParams(new LinearLayout.LayoutParams(maxSize, maxSize / views.size()));
-            inside.addView(tv);
-        }
     }
 
     public void setState(boolean state) {
@@ -172,18 +150,8 @@ public int getSize(){
         } else {
             g = g | Gravity.END;
         }
-        inside.setGravity(g);
+        setGravity(g);
         corner();
-    }
-
-    private TextView generateView(String text, int textColor, int textSize, Typeface typeface) {
-        final TextView tv = new TextView(getContext());
-        tv.setTextColor(textColor);
-        tv.setText(text);
-        tv.setTextSize(textSize);
-        tv.setGravity(Gravity.CENTER);
-        tv.setTypeface(typeface);
-        return tv;
     }
 
     public void addOnState(OnState onState) {

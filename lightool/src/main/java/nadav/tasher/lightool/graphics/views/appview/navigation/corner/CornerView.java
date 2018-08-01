@@ -6,8 +6,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import nadav.tasher.lightool.graphics.views.appview.navigation.squircle.Squircle;
-
 public class CornerView extends FrameLayout {
 
     private LinearLayout topLeft, topRight, bottomLeft, bottomRight;

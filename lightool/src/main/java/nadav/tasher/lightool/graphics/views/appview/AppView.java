@@ -43,6 +43,7 @@ public class AppView extends FrameLayout {
     }
 
     private void initOrder() {
+        removeAllViews();
         addView(scroll);
         if (order == ORDER_NAVIGATION_ON_TOP) {
             addView(drawer);
