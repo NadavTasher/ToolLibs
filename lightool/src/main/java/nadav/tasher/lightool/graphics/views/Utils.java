@@ -15,7 +15,21 @@ public class Utils {
         return new InsetDrawable(coaster,padding,padding,padding,padding);
     }
 
-    public static Drawable getCoaster(int color,int radii, int padding,int size){
+    public static Drawable getCoaster(int color, int radii, int paddingX,int paddingY){
+        GradientDrawable coaster=new GradientDrawable();
+        coaster.setColor(color);
+        coaster.setCornerRadius(radii);
+        return new InsetDrawable(coaster,paddingX,paddingY,paddingX,paddingY);
+    }
+
+    public static Drawable getCoaster(int color, int radii, int left,int right,int top,int bottom){
+        GradientDrawable coaster=new GradientDrawable();
+        coaster.setColor(color);
+        coaster.setCornerRadius(radii);
+        return new InsetDrawable(coaster,left,top,right,bottom);
+    }
+
+    public static Drawable getSizedCoaster(int color,int radii, int padding,int size){
         float[] corners = new float[]{radii, radii, radii, radii, radii, radii, radii, radii};
         RoundRectShape coasterShape = new RoundRectShape(corners, new RectF(), corners);
         ShapeDrawable coaster = new ShapeDrawable(coasterShape);
@@ -25,7 +39,7 @@ public class Utils {
         return new InsetDrawable(coaster,padding,padding,padding,padding);
     }
 
-    public static Drawable getCoaster(int color,int radii, int padding,int sizeX,int sizeY){
+    public static Drawable getSizedCoaster(int color,int radii, int padding,int sizeX,int sizeY){
         float[] corners = new float[]{radii, radii, radii, radii, radii, radii, radii, radii};
         RoundRectShape coasterShape = new RoundRectShape(corners, new RectF(), corners);
         ShapeDrawable coaster = new ShapeDrawable(coasterShape);
