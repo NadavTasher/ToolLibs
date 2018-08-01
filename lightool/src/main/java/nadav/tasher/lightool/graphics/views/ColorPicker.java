@@ -32,7 +32,6 @@ public class ColorPicker extends SeekBar {
         setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i("Progress", String.valueOf(progress));
                 currentColor = getColorFromProgress(progress);
                 drawThumb();
                 if (onColor != null) onColor.onColorChange(currentColor);
