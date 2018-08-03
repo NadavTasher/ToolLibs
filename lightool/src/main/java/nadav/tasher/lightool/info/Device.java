@@ -1,11 +1,14 @@
 package nadav.tasher.lightool.info;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -58,6 +61,25 @@ public class Device {
             return null;
         }
     }
+
+    static boolean isJobServiceRunning(Context context, int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            JobScheduler scheduler = context.getSystemService(JobScheduler.class);
+            boolean hasBeenScheduled = false;
+            if (scheduler != null) {
+                for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+                    if (jobInfo.getId() == id) {
+                        hasBeenScheduled = true;
+                        break;
+                    }
+                }
+            }
+            return hasBeenScheduled;
+        } else {
+            return false;
+        }
+    }
+
 
     public static int screenX(Context con) {
         Display display = ((WindowManager) con.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
