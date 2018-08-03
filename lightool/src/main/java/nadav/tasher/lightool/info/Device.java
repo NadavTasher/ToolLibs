@@ -61,7 +61,7 @@ public class Device {
         }
     }
 
-    static boolean isJobServiceRunning(Context context, int id) {
+    public static boolean isJobServiceScheduled(Context context, int id) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             JobScheduler scheduler = context.getSystemService(JobScheduler.class);
             boolean hasBeenScheduled = false;
