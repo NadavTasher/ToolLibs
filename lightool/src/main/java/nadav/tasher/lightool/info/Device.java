@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.view.Display;
 import android.view.WindowManager;
 
 public class Device {
@@ -80,18 +79,23 @@ public class Device {
         }
     }
 
-
     public static int screenX(Context con) {
-        Display display = ((WindowManager) con.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.x;
+        WindowManager windowManager = (WindowManager) con.getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager != null) {
+            Point p = new Point();
+            windowManager.getDefaultDisplay().getSize(p);
+            return p.x;
+        }
+        return 0;
     }
 
     public static int screenY(Context con) {
-        Display display = ((WindowManager) con.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.y;
+        WindowManager windowManager = (WindowManager) con.getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager != null) {
+            Point p = new Point();
+            windowManager.getDefaultDisplay().getSize(p);
+            return p.y;
+        }
+        return 0;
     }
 }
