@@ -60,8 +60,8 @@ public class ColorPicker extends SeekBar {
             size = getLayoutParams().height - getPaddingTop() - getPaddingBottom();
         }
         LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{
-                Utils.getCoaster(Color.WHITE, 16, 10, size / 2, size),
-                Utils.getCoaster(currentColor, 16, 10, (int) (size / 2.25), (int) (size / 1.25))
+                Utils.getSizedCoaster(Color.WHITE, 16, 10, size / 2, size),
+                Utils.getSizedCoaster(currentColor, 16, 10, (int) (size / 2.25), (int) (size / 1.25))
         });
         setThumb(layerDrawable);
     }
