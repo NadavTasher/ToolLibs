@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,11 +70,8 @@ public class ExpandingView extends LinearLayout {
     }
 
     private void animate(final boolean open) {
-        int bottomHeight=bottomView.getLayoutParams().height;
-        if(bottomHeight == ViewGroup.LayoutParams.MATCH_PARENT || bottomHeight == ViewGroup.LayoutParams.WRAP_CONTENT){
-            bottomView.measure(ViewGroup.LayoutParams.MATCH_PARENT, bottomHeight);
-            bottomHeight=bottomView.getMeasuredHeight();
-        }
+        Utils.measure(bottomView);
+        int bottomHeight=bottomView.getMeasuredHeight();
         int first, second;
         if (open) {
             first = minimalSize + getVerticalPadding();

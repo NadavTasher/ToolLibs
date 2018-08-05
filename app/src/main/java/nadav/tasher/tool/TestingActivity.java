@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,25 +77,18 @@ public class TestingActivity extends Activity {
         TextView myTextB = new TextView(getApplicationContext());
         myTextA.setGravity(Gravity.CENTER);
         myTextB.setGravity(Gravity.CENTER);
-        myTextB.setText("This Is Another Text.");
+        myTextB.setTextSize(32);
+        myTextB.measure(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        Log.i("BHO",""+myTextB.getMeasuredHeight());
+
         //        myTextB.setPadding(0,30,0,30);
-        myTextB.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenY(getApplicationContext()) / 13));
-        ExpandingView ev = new ExpandingView(getApplicationContext(), 500, Device.screenY(getApplicationContext()) / 13, myTextA, myTextB);
-        ev.setBackground(Utils.getCoaster(Color.WHITE, 32, 10));
-        ColorPicker colorPicker = new ColorPicker(getApplicationContext());
-        colorPicker.setLayoutParams(new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenY(getApplicationContext()) / 12));
-        colorPicker.setColor(Color.rgb(255, 255, 255));
-        view.getScrolly().setFillViewport(true);
-        colorPicker.setOnColor(new ColorPicker.OnColorChanged() {
-            @Override
-            public void onColorChange(int color) {
-                Log.i("Color", "" + color);
-                Log.i("RED", String.valueOf(Color.red(color)));
-                Log.i("GREEN", String.valueOf(Color.green(color)));
-                Log.i("BLUE", String.valueOf(Color.blue(color)));
-            }
-        });
-        view.getScrolly().setView(colorPicker);
+//        myTextB.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Device.screenY(getApplicationContext()) / 13));
+        ExpandingView ev = new ExpandingView(getApplicationContext(), Utils.getCoaster(Color.WHITE, 32, 10),500, Device.screenY(getApplicationContext()) / 13, myTextA, myTextB);
+        LinearLayout ll=new LinearLayout(getApplicationContext());
+        ll.setGravity(Gravity.CENTER);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.addView(ev);
+        view.getScrolly().setView(ll);
         setContentView(view);
     }
 }
