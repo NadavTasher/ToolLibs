@@ -78,6 +78,7 @@ public class TestingActivity extends Activity {
         myTextA.setGravity(Gravity.CENTER);
         myTextB.setGravity(Gravity.CENTER);
         myTextB.setTextSize(32);
+        myTextB.setText("This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.\nThis Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.\nThis Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.\nThis Is A Text.");
         myTextB.measure(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         Log.i("BHO",""+myTextB.getMeasuredHeight());
 
