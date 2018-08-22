@@ -13,22 +13,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import nadav.tasher.lightool.graphics.views.ColorPicker;
 import nadav.tasher.lightool.graphics.views.ExpandingView;
 import nadav.tasher.lightool.graphics.views.Utils;
 import nadav.tasher.lightool.graphics.views.appview.AppView;
 import nadav.tasher.lightool.graphics.views.appview.navigation.corner.Corner;
 import nadav.tasher.lightool.info.Device;
+import nadav.tasher.lightool.parts.Peer;
 
 public class TestingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final AppView view = new AppView(this);
-        view.getDrawer().getDrawerView().setBackground(Utils.getCoaster(Color.BLACK, 64, 20));
+        new Peer<String>().
+                view.getDrawer().getDrawerView().setBackground(Utils.getCoaster(Color.BLACK, 64, 20));
         view.getDrawer().setAnimationTime(1000);
         Corner c = new Corner(getApplicationContext(), Device.screenX(getApplicationContext()) / 5, 0xFF123987);
         ImageView imageView = new ImageView(getApplicationContext());

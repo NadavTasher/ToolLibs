@@ -12,18 +12,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.UUID;
 
-import nadav.tasher.lightool.communication.SessionStatus;
 import nadav.tasher.lightool.parts.Peer;
 import nadav.tasher.lightool.parts.Tower;
 
-public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
+public class BluetoothSession extends AsyncTask<String, String, Boolean> {
     private Context context;
     private String address;
     private Tower<String> incomingTower, outgoingTower;
     private BluetoothSocket socket;
-    private SessionStatus currentStatus;
     private int sample;
-    private SessionStatus.SessionStatusTower[] tunnels;
 
     public BluetoothSession(Context context, String address, int samplingRateHz) {
         this.context = context;
@@ -31,12 +28,6 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
         this.sample = 1000 / samplingRateHz;
         incomingTower = new Tower<>();
         outgoingTower = new Tower<>();
-    }
-
-    private void sendStatus() {
-        for (int t = 0; t < tunnels.length; t++) {
-            tunnels[t].tell(currentStatus);
-        }
     }
 
     public void send(String s) {
@@ -50,14 +41,8 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
                     socket.getOutputStream().flush();
                     socket.getOutputStream().close();
                     socket.close();
-                    currentStatus.setStatus(SessionStatus.FINISHING);
-                    sendStatus();
                 } catch (IOException ignored) {
-                    currentStatus.setStatus(SessionStatus.FINISHING_FAILED);
-                    sendStatus();
                 }
-                currentStatus.setStatus(SessionStatus.FINISHED_SUCCESS);
-                sendStatus();
             }
         }
     }
@@ -79,36 +64,21 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
     }
 
     @Override
-    protected SessionStatus doInBackground(SessionStatus.SessionStatusTower... tunnels) {
-        this.tunnels = tunnels;
-        currentStatus = new SessionStatus();
-        sendStatus();
-        currentStatus.setStatus(SessionStatus.STARTING);
-        sendStatus();
+    protected Boolean doInBackground(String... tunnels) {
         BluetoothAdapter blueAdapter;
         BluetoothManager manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager != null) {
-            currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-            sendStatus();
             blueAdapter = manager.getAdapter();
             if (blueAdapter.isEnabled()) {
-                currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                sendStatus();
                 blueAdapter.cancelDiscovery();
                 final BluetoothDevice device = blueAdapter.getRemoteDevice(address);
                 UUID uuid = device.getUuids()[0].getUuid();
-                currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                sendStatus();
                 try {
                     socket = device.createRfcommSocketToServiceRecord(uuid);
-                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                    sendStatus();
                     try {
                         socket.connect();
-                        while (!socket.isConnected())
-                            currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                        sendStatus();
-                        outgoingTower.addPeer(new Peer<String>(new Peer.OnPeer<String>() {
+                        while (!socket.isConnected()) ;
+                        outgoingTower.addPeer(new Peer<>(new Peer.OnPeer<String>() {
                             @Override
                             public boolean onPeer(String data) {
                                 if (socket != null) {
@@ -123,8 +93,6 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
                                 return true;
                             }
                         }));
-                        currentStatus.setStatus(SessionStatus.CONNECTED);
-                        sendStatus();
                         BufferedReader r;
                         r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         StringBuilder caught = new StringBuilder();
@@ -137,8 +105,6 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
                                 if (!(caught.toString() + total.toString()).equals(caught.toString())) {
                                     caught.append(total.toString());
                                     incomingTower.tell(caught.toString());
-                                    currentStatus.setStatus(SessionStatus.IDLE);
-                                    sendStatus();
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -149,25 +115,13 @@ public class BluetoothSession extends AsyncTask<SessionStatus.SessionStatusTower
                                 e.printStackTrace();
                             }
                         }
-                        currentStatus.setStatus(SessionStatus.DISCONNECTED);
-                        sendStatus();
                     } catch (IOException e) {
-                        currentStatus.setStatus(SessionStatus.FINISHED_FAILED);
-                        sendStatus();
                     }
                 } catch (IOException ignored) {
-                    currentStatus.setStatus(SessionStatus.STARTING_FAILED);
-                    sendStatus();
                 }
-            } else {
-                currentStatus.setStatus(SessionStatus.STARTING_FAILED);
-                sendStatus();
             }
-        } else {
-            currentStatus.setStatus(SessionStatus.STARTING_FAILED);
-            sendStatus();
         }
-        return currentStatus;
+        return true;
     }
 }
 

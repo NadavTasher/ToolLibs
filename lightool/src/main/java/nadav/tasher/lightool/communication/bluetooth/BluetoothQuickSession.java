@@ -10,99 +10,66 @@ import android.os.AsyncTask;
 import java.io.IOException;
 import java.util.UUID;
 
-import nadav.tasher.lightool.communication.OnFinish;
-import nadav.tasher.lightool.communication.SessionStatus;
-import nadav.tasher.lightool.parts.Tower;
-
-public class BluetoothQuickSession extends AsyncTask<SessionStatus.SessionStatusTower, SessionStatus.SessionStatusTower, SessionStatus> {
+public class BluetoothQuickSession extends AsyncTask<String, String, Boolean> {
     private Context context;
     private String address, data;
-    private OnFinish onFinish;
+    private Callback callback;
 
-    public BluetoothQuickSession(Context context, String address, String data, OnFinish onFinish) {
+    public BluetoothQuickSession(Context context, String address, String data, Callback callback) {
         this.context = context;
-        this.onFinish = onFinish;
+        this.callback = callback;
         this.address = address;
         this.data = data;
     }
 
-    private void sendStatus(SessionStatus ss, Tower<SessionStatus>[] tns) {
-        for (int t = 0; t < tns.length; t++) {
-            tns[t].tell(ss);
-        }
-    }
-
     @Override
-    protected SessionStatus doInBackground(SessionStatus.SessionStatusTower... tunnels) {
-        SessionStatus currentStatus = new SessionStatus();
-        sendStatus(currentStatus, tunnels);
-        currentStatus.setStatus(SessionStatus.STARTING);
-        sendStatus(currentStatus, tunnels);
+    protected Boolean doInBackground(String... strings) {
         BluetoothAdapter blueAdapter;
         BluetoothManager manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager != null) {
-            currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-            sendStatus(currentStatus, tunnels);
             blueAdapter = manager.getAdapter();
             if (blueAdapter.isEnabled()) {
-                currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                sendStatus(currentStatus, tunnels);
                 blueAdapter.cancelDiscovery();
                 final BluetoothDevice device = blueAdapter.getRemoteDevice(address);
                 UUID uuid = device.getUuids()[0].getUuid();
-                currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                sendStatus(currentStatus, tunnels);
                 try {
                     final BluetoothSocket socket = device.createRfcommSocketToServiceRecord(uuid);
-                    currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                    sendStatus(currentStatus, tunnels);
                     try {
                         socket.connect();
-                        while (!socket.isConnected())
-                            currentStatus.setStatus(SessionStatus.IN_PROGRESS);
-                        sendStatus(currentStatus, tunnels);
+                        while (!socket.isConnected()) ;
                         if (socket.isConnected()) {
-                            currentStatus.setStatus(SessionStatus.FINISHING);
-                            sendStatus(currentStatus, tunnels);
                             socket.getOutputStream().write(data.getBytes());
-                            currentStatus.setStatus(SessionStatus.FINISHING);
-                            sendStatus(currentStatus, tunnels);
                             try {
                                 socket.getOutputStream().flush();
                                 socket.getOutputStream().close();
                                 socket.close();
                             } catch (IOException ignored) {
-                                currentStatus.setStatus(SessionStatus.FINISHING_FAILED);
-                                sendStatus(currentStatus, tunnels);
                             }
-                            currentStatus.setStatus(SessionStatus.FINISHED_SUCCESS);
-                            sendStatus(currentStatus, tunnels);
+                            return true;
                         } else {
-                            currentStatus.setStatus(SessionStatus.FINISHED_FAILED);
-                            sendStatus(currentStatus, tunnels);
+                            return false;
                         }
                     } catch (IOException e) {
-                        currentStatus.setStatus(SessionStatus.NOT_FINISHED_FAILED);
-                        sendStatus(currentStatus, tunnels);
+                        return false;
                     }
                 } catch (IOException e) {
-                    currentStatus.setStatus(SessionStatus.NOT_FINISHED_FAILED);
-                    sendStatus(currentStatus, tunnels);
+                    return false;
                 }
             } else {
-                currentStatus.setStatus(SessionStatus.STARTING_FAILED);
-                sendStatus(currentStatus, tunnels);
+                return false;
             }
         } else {
-            currentStatus.setStatus(SessionStatus.STARTING_FAILED);
-            sendStatus(currentStatus, tunnels);
+            return false;
         }
-        return currentStatus;
     }
 
     @Override
-    protected void onPostExecute(SessionStatus status) {
-        super.onPostExecute(status);
-        if (onFinish != null) onFinish.onFinish(status);
+    protected void onPostExecute(Boolean success) {
+        super.onPostExecute(success);
+        if (callback != null) callback.onFinish(success);
+    }
+
+    public interface Callback {
+        void onFinish(Boolean success);
     }
 }

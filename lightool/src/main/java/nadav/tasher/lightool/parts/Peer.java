@@ -4,18 +4,15 @@ import java.util.ArrayList;
 
 public class Peer<T> {
 
-    public ArrayList<T> datas = new ArrayList<>();
+    ArrayList<T> data = new ArrayList<>();
 
-    public T currentData;
-
-    public OnPeer<T> onPeer;
+    OnPeer<T> onPeer;
 
     public Peer() {
     }
 
     public Peer(T initial) {
-        this.datas.add(initial);
-        this.currentData = initial;
+        this.data.add(initial);
     }
 
     public Peer(OnPeer<T> onPeer) {
@@ -24,40 +21,37 @@ public class Peer<T> {
 
     public Peer(T initial, OnPeer<T> onPeer) {
         this.onPeer = onPeer;
-        this.datas.add(initial);
-        this.currentData = initial;
+        this.data.add(initial);
     }
 
-    public boolean ask(T data) {
+    public boolean ask(T newData) {
         if (onPeer != null) {
-            boolean result = onPeer.onPeer(data);
+            boolean result = onPeer.onPeer(newData);
             if (result) {
-                datas.add(data);
-                currentData = data;
+                data.add(newData);
             }
             return result;
         }
         return false;
     }
 
-    public void tell(T data) {
-        datas.add(data);
-        currentData = data;
+    public void tell(T newData) {
+        data.add(newData);
         if (onPeer != null) {
-            onPeer.onPeer(data);
+            onPeer.onPeer(newData);
         }
     }
 
-    public void setOnPeer(OnPeer<T> onPeer){
-        this.onPeer=onPeer;
+    public void setOnPeer(OnPeer<T> onPeer) {
+        this.onPeer = onPeer;
     }
 
-    public ArrayList<T> getDatas() {
-        return datas;
+    public ArrayList<T> getData() {
+        return data;
     }
 
-    public T getCurrentData() {
-        return currentData;
+    public T getLast() {
+        return (data.isEmpty()) ? null : data.get(data.size() - 1);
     }
 
     public interface OnPeer<T> {
