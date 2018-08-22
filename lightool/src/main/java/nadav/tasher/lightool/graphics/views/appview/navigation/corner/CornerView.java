@@ -2,6 +2,7 @@ package nadav.tasher.lightool.graphics.views.appview.navigation.corner;
 
 import android.content.Context;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,6 +22,11 @@ public class CornerView extends FrameLayout {
         topRight = new LinearLayout(getContext());
         bottomLeft = new LinearLayout(getContext());
         bottomRight = new LinearLayout(getContext());
+        // Set LayoutDirection
+        topLeft.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        topRight.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        bottomLeft.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        bottomRight.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         // Set Orientation
         topLeft.setOrientation(LinearLayout.VERTICAL);
         topRight.setOrientation(LinearLayout.VERTICAL);
