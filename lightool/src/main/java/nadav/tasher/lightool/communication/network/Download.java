@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,7 +44,7 @@ public class Download extends AsyncTask<String, String, Boolean> {
                     return false;
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             this.exception = e;
             return false;
         }
