@@ -6,32 +6,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.view.WindowManager;
 
 public class Device {
     public static boolean isOnline(Context c) {
-        return ((ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
-    }
-
-    public static boolean isWifi(Context c) {
-        ConnectivityManager connectivityManager = ((ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE));
-        Network[] networks = connectivityManager.getAllNetworks();
-        if (networks == null) {
-            return false;
-        } else {
-            for (Network network : networks) {
-                NetworkInfo info = connectivityManager.getNetworkInfo(network);
-                if (info != null && info.getType() == ConnectivityManager.TYPE_WIFI) {
-                    if (info.isAvailable() && info.isConnected()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        ConnectivityManager manager = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (manager != null) && manager.getActiveNetworkInfo() != null;
     }
 
     public static boolean isInstalled(Context con, String packageName) {
