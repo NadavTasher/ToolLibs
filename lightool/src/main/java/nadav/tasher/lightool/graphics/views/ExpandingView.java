@@ -46,7 +46,7 @@ public class ExpandingView extends LinearLayout {
         topHolder = new FrameLayout(getContext());
         bottomHolder = new FrameLayout(getContext());
         setOrientation(VERTICAL);
-        setGravity(Gravity.START);
+        setGravity(Gravity.CENTER);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
