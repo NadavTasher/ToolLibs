@@ -30,8 +30,8 @@ public class Requester extends AsyncTask<String, String, Response> {
     protected void onPostExecute(Response response) {
         super.onPostExecute(response);
         if (callback != null) {
-                callback.onCall(response);
-            }
+            callback.onCall(response);
+        }
         try {
             if (response != null && response.body() != null) response.body().close();
         } catch (Exception e) {

@@ -4,34 +4,30 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 public class ExpandingView extends LinearLayout {
-    private View topView, bottomView;
+    private FrameLayout topHolder, bottomHolder;
     private boolean isOpened = false, isAnimating = false;
-    private int duration, minimalSize;
+    private int duration = 500;
 
-    public ExpandingView(Context c, int duration, int minimalSize, View topView, View bottomView) {
-        super(c);
-        this.topView = topView;
-        this.bottomView = bottomView;
-        this.duration = duration;
-        this.minimalSize = minimalSize;
+    public ExpandingView(Context context) {
+        super(context);
         init();
     }
 
-    public ExpandingView(Context c, Drawable back, int duration, int minimalSize, View topView, View bottomView) {
-        super(c);
-        this.setBackground(back);
-        this.topView = topView;
-        this.bottomView = bottomView;
+    public void setDuration(int duration) {
         this.duration = duration;
-        this.minimalSize = minimalSize;
-        init();
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        super.setBackground(background);
+        reinitLayout();
     }
 
     public void setPadding(int horizontal, int vertical) {
@@ -47,9 +43,10 @@ public class ExpandingView extends LinearLayout {
     }
 
     private void init() {
+        topHolder = new FrameLayout(getContext());
+        bottomHolder = new FrameLayout(getContext());
         setOrientation(VERTICAL);
         setGravity(Gravity.START);
-        setPadding(30, 20);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,22 +60,50 @@ public class ExpandingView extends LinearLayout {
                 }
             }
         });
-        topView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, minimalSize));
-        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, minimalSize + getVerticalPadding()));
-        addView(topView);
-        addView(bottomView);
+        addView(topHolder);
+        addView(bottomHolder);
+        reinitLayout();
+    }
+
+    public FrameLayout getBottomHolder() {
+        return bottomHolder;
+    }
+
+    public FrameLayout getTopHolder() {
+        return topHolder;
+    }
+
+    public void setBottom(View v) {
+        bottomHolder.removeAllViews();
+        bottomHolder.addView(v);
+        reinitLayout();
+    }
+
+    public void setTop(View v) {
+        topHolder.removeAllViews();
+        topHolder.addView(v);
+        reinitLayout();
+    }
+
+    private void reinitLayout() {
+        Utils.measure(topHolder);
+        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, topHolder.getMeasuredHeight() + getVerticalPadding()));
+        setPadding(getHorizontalPadding() / 2, getVerticalPadding() / 2);
     }
 
     private void animate(final boolean open) {
-        Utils.measure(bottomView);
-        int bottomHeight=bottomView.getMeasuredHeight();
+        Utils.measure(topHolder);
+        Utils.measure(bottomHolder);
+
+        int bottomHeight = bottomHolder.getMeasuredHeight();
+        int topHeight = topHolder.getMeasuredHeight();
         int first, second;
         if (open) {
-            first = minimalSize + getVerticalPadding();
-            second = minimalSize + bottomHeight + getVerticalPadding();
+            first = topHeight + getVerticalPadding();
+            second = topHeight + bottomHeight + getVerticalPadding();
         } else {
-            first = minimalSize + bottomHeight + getVerticalPadding();
-            second = minimalSize + getVerticalPadding();
+            first = topHeight + bottomHeight + getVerticalPadding();
+            second = topHeight + getVerticalPadding();
         }
         ValueAnimator animator = ValueAnimator.ofInt(first, second);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
