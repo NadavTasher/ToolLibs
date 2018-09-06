@@ -9,17 +9,17 @@ import okhttp3.Response;
 public class Requester extends AsyncTask<String, String, Response> {
 
     private Callback callback;
-    private Request request;
+    private Request.Builder requestBuilder;
 
-    public Requester(Request request, Callback callback) {
-        this.request = request;
+    public Requester(Request.Builder requestBuilder, Callback callback) {
+        this.requestBuilder = requestBuilder;
         this.callback = callback;
     }
 
     @Override
     protected Response doInBackground(String... strings) {
         try {
-            return new OkHttpClient().newCall(request).execute();
+            return new OkHttpClient().newCall(requestBuilder.build()).execute();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -30,13 +30,13 @@ public class Requester extends AsyncTask<String, String, Response> {
     protected void onPostExecute(Response response) {
         super.onPostExecute(response);
         if (callback != null) {
-            if (response != null) {
                 callback.onCall(response);
-            } else {
-                callback.onCall(new Response.Builder().build());
             }
+        try {
+            if (response != null && response.body() != null) response.body().close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (response != null && response.body() != null) response.body().close();
     }
 
     public interface Callback {
