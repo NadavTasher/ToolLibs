@@ -27,7 +27,7 @@ public class ExpandingView extends LinearLayout {
     @Override
     public void setBackground(Drawable background) {
         super.setBackground(background);
-        reinitLayout();
+        initLayout();
     }
 
     public void setPadding(int horizontal, int vertical) {
@@ -62,7 +62,7 @@ public class ExpandingView extends LinearLayout {
         });
         addView(topHolder);
         addView(bottomHolder);
-        reinitLayout();
+        initLayout();
     }
 
     public FrameLayout getBottomHolder() {
@@ -76,16 +76,16 @@ public class ExpandingView extends LinearLayout {
     public void setBottom(View v) {
         bottomHolder.removeAllViews();
         bottomHolder.addView(v);
-        reinitLayout();
+        initLayout();
     }
 
     public void setTop(View v) {
         topHolder.removeAllViews();
         topHolder.addView(v);
-        reinitLayout();
+        initLayout();
     }
 
-    private void reinitLayout() {
+    private void initLayout() {
         Utils.measure(topHolder);
         setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, topHolder.getMeasuredHeight() + getVerticalPadding()));
         setPadding(getHorizontalPadding() / 2, getVerticalPadding() / 2);
