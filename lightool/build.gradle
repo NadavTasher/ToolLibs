@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 48
-        versionName "4.8"
+        versionCode 49
+        versionName "4.9"
     }
     buildTypes {
         release {
@@ -20,5 +20,4 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 }
