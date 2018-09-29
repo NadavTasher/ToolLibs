@@ -79,6 +79,8 @@ public class TestingActivity extends Activity {
         myTextB.setGravity(Gravity.CENTER);
         myTextB.setTextSize(32);
         myTextB.setText("This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.\nThis Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.\nThis Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.This Is A Text.\nThis Is A Text.");
+        myTextB.setText("ThisISMOVN");
+        myTextB.setBackgroundColor(Color.GREEN);
         myTextB.measure(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         Log.i("BHO", "" + myTextB.getMeasuredHeight());
         //        myTextB.setPadding(0,30,0,30);
@@ -86,6 +88,7 @@ public class TestingActivity extends Activity {
         ExpandingView ev = new ExpandingView(getApplicationContext());
         ev.setBackground(Utils.getCoaster(Color.WHITE, 32, 10));
         ev.setDuration(3000);
+        ev.setPadding(0, 0);
         ev.setTop(myTextA);
         ev.setBottom(myTextB);
 //                , Utils.getCoaster(Color.WHITE, 32, 10), 500, Device.screenY(getApplicationContext()) / 13, myTextA, myTextB;
